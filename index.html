@@ -3,478 +3,2530 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Feasibility Study / San Francisco</title>
+<title>feasibility study / sf</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; color: #5a5249; background: #faf7f2; line-height: 1.65; -webkit-font-smoothing: antialiased; }
-  input[type=range] { -webkit-appearance: none; height: 2px; background: #ddd5c8; outline: none; width: 100%; }
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #8b7e6a; cursor: pointer; border: 2px solid #faf7f2; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
-  input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #8b7e6a; cursor: pointer; border: 2px solid #faf7f2; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
-  button { font-family: 'DM Sans', sans-serif; }
-  table { border-spacing: 0; }
+
+:root {
+  --bg: #faf7f2;
+  --paper: #fffdf9;
+  --ink: #3d3832;
+  --body: #5a5249;
+  --muted: #8b7e6a;
+  --line: rgba(139,126,106,0.15);
+  --soft: rgba(139,126,106,0.06);
+  --shadow: 0 18px 48px rgba(52,45,35,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--body);
+  background: var(--bg);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-transform: lowercase;
+}
+button, input { font-family: 'DM Sans', sans-serif; }
+
+.page { max-width: 1160px; margin: 0 auto; padding: 44px 20px 84px; }
+.topbar { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 18px; }
+.kicker { font-size: 11px; letter-spacing: 0.14em; color: #b5aa9a; text-transform: lowercase; }
+h1 {
+  font-size: clamp(38px, 5vw, 64px);
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  margin: 8px 0 14px;
+}
+.lede { max-width: 780px; font-size: 16px; color: #6b6358; margin-bottom: 30px; }
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1.1fr) minmax(320px,.9fr);
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 26px;
+}
+.card {
+  background: rgba(255,253,249,0.88);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+.card-tight { padding: 20px; }
+.eyebrow { font-size: 11px; letter-spacing: 0.12em; text-transform: lowercase; color: var(--muted); margin-bottom: 10px; }
+.hero-thesis {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  line-height: 1.06;
+  color: var(--ink);
+  margin-bottom: 18px;
+  max-width: none;
+}
+
+.metric-button {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: linear-gradient(180deg, rgba(139,126,106,0.12), rgba(139,126,106,0.04));
+  border-radius: 22px;
+  padding: 22px;
+  cursor: pointer;
+  margin-bottom: 18px;
+  transition: transform 0.2s ease;
+}
+.metric-button:hover { transform: translateY(-1px); }
+.metric-label { font-size: 11px; letter-spacing: 0.08em; text-transform: lowercase; color: var(--muted); margin-bottom: 8px; }
+.metric-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(48px, 7vw, 86px);
+  font-weight: 300;
+  line-height: 0.9;
+  color: var(--ink);
+}
+.metric-sub { font-size: 13px; color: #877d71; margin-top: 12px; max-width: 46ch; }
+
+.metric-meta { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin-bottom: 20px; }
+.mini-tile {
+  padding: 14px 14px 12px;
+  border-radius: 16px;
+  background: var(--soft);
+  border: 1px solid rgba(139,126,106,0.08);
+}
+.mini-label { font-size: 13px; letter-spacing: 0.08em; text-transform: lowercase; color: #9a8f82; margin-bottom: 6px; }
+.mini-value { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--ink); line-height: 1; }
+.mini-note { font-size: 12px; color: #8b7e6a; margin-top: 4px; }
+.divider { height: 1px; background: var(--line); margin: 20px 0; }
+
+.stackbar {
+  display: flex;
+  width: 100%;
+  height: 14px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #eee7db;
+  margin: 14px 0 12px;
+}
+.stackbar > div { height: 100%; }
+.legend-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: 10px; }
+.legend-item { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 14px; background: rgba(139,126,106,0.04); }
+.legend-swatch { width: 10px; height: 10px; border-radius: 999px; margin-top: 6px; flex-shrink: 0; }
+.legend-text strong { display: block; font-size: 13px; color: var(--ink); font-weight: 500; }
+.legend-text span { font-size: 12px; color: #8b7e6a; }
+
+.control-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+.control-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  line-height: 1.05;
+  color: var(--ink);
+}
+.muted { font-size: 13px; color: #8b7e6a; margin-bottom: 18px; }
+
+.button-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.pill {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: #8b7e6a;
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.pill.active {
+  background: rgba(61,56,50,0.95);
+  border-color: rgba(61,56,50,0.95);
+  color: #faf7f2;
+}
+.link-button {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: #7a7267;
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.slider-block { margin-bottom: 18px; }
+.slider-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 6px; font-size: 13px; color: #7a7267; }
+.slider-value { font-family: 'Cormorant Garamond', serif; font-size: 19px; color: var(--ink); line-height: 1; }
+
+input[type=range] {
+  -webkit-appearance: none;
+  height: 3px;
+  background: #ddd5c8;
+  outline: none;
+  width: 100%;
+  border-radius: 999px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #8b7e6a;
+  cursor: pointer;
+  border: 2px solid #faf7f2;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+input[type=range]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #8b7e6a;
+  cursor: pointer;
+  border: 2px solid #faf7f2;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.output-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin-top: 18px; }
+.output-tile {
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(139,126,106,0.05);
+  border: 1px solid rgba(139,126,106,0.08);
+}
+.output-label { font-size: 10px; text-transform: lowercase; letter-spacing: 0.08em; color: #9a8f82; margin-bottom: 8px; }
+.output-value { font-family: 'Cormorant Garamond', serif; font-size: 29px; line-height: 1; color: var(--ink); }
+.output-base { font-size: 12px; color: #9a8f82; margin-top: 6px; }
+
+.section { margin-top: 38px; }
+.section-head { display: flex; justify-content: space-between; gap: 18px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 16px; }
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.02;
+  color: var(--ink);
+  margin: 6px 0 0;
+}
+.section-note { max-width: 560px; font-size: 14px; color: #8b7e6a; }
+
+.auto-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 16px; }
+.card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  line-height: 1.05;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.card-copy { font-size: 14px; color: #5a5249; }
+.card-list { list-style: none; padding: 0; margin: 0; }
+.card-list li { padding: 8px 0 0 16px; position: relative; font-size: 14px; color: #5a5249; }
+.card-list li::before { content: "—"; position: absolute; left: 0; color: #b5aa9a; }
+
+.matrix-wrap { display: grid; grid-template-columns: minmax(0,1fr) minmax(220px,0.72fr); gap: 14px; align-items: start; }
+.matrix-shell { position: relative; padding: 16px 14px 38px 42px; min-width: 0; }
+.matrix-axis-title { position: absolute; font-size: 12px; color: #8b7e6a; letter-spacing: 0.06em; }
+.matrix-axis-title.x { left: 50%; bottom: 10px; transform: translateX(-50%); }
+.matrix-axis-title.y { left: 6px; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: left top; }
+.matrix {
+  position: relative;
+  height: 340px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(to right, rgba(139,126,106,0.06) 1px, transparent 1px),
+    linear-gradient(to top, rgba(139,126,106,0.06) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(139,126,106,0.04), rgba(139,126,106,0.01));
+  background-size: 25% 25%, 25% 25%, 100% 100%;
+  overflow: hidden;
+}
+.matrix-axis { position: absolute; font-size: 12px; color: #8b7e6a; }
+.matrix-axis.x-left { left: 18px; bottom: 10px; }
+.matrix-axis.x-right { right: 18px; bottom: 10px; }
+.matrix-axis.y-bottom { right: -28px; bottom: 24px; transform: rotate(-90deg); transform-origin: bottom right; }
+.matrix-axis.y-top { right: -28px; top: 24px; transform: rotate(-90deg); transform-origin: top right; }
+.matrix-point { position: absolute; transform: translate(-50%,50%); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.matrix-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 3px solid #faf7f2;
+  box-shadow: 0 8px 16px rgba(61,56,50,0.18);
+}
+.matrix-tag {
+  font-size: 10px;
+  color: var(--ink);
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255,253,249,0.92);
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.score-grid { display: grid; gap: 10px; margin-top: 12px; }
+.score-row { display: grid; grid-template-columns: 120px 1fr auto; gap: 10px; align-items: center; font-size: 12px; color: #7a7267; }
+.score-track { height: 8px; border-radius: 999px; background: #eee7db; overflow: hidden; }
+.score-fill { height: 100%; border-radius: 999px; }
+
+.expando { cursor: pointer; }
+.expando-header { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.badge {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  padding: 5px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.badge.high { background: rgba(78,123,94,0.10); color: #4e7b5e; border-color: rgba(78,123,94,0.18); }
+.badge.medium { background: rgba(170,123,56,0.10); color: #9a6a2d; border-color: rgba(170,123,56,0.18); }
+.badge.low { background: rgba(160,90,44,0.10); color: #a05a2c; border-color: rgba(160,90,44,0.18); }
+.expando-copy { margin-top: 10px; font-size: 13px; color: #7a7267; }
+
+.risk-card { border-left: 4px solid; }
+.risk-green { border-color: #7a9b7c; }
+.risk-amber { border-color: #b98b43; }
+.risk-red { border-color: #b6654a; }
+
+.accordion { border-top: 1px solid var(--line); }
+.accordion button {
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 18px 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+}
+.accordion-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--ink); line-height: 1.05; }
+.accordion-summary { font-size: 13px; color: #8b7e6a; margin-top: 4px; }
+.accordion-body { padding: 0 0 20px; }
+
+.table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 18px; background: #fffdf9; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px 14px; border-bottom: 1px solid rgba(224,217,207,0.55); }
+th {
+  font-size: 11px;
+  text-transform: lowercase;
+  letter-spacing: 0.08em;
+  color: #8b7e6a;
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+}
+th:first-child, td:first-child { text-align: left; }
+td { font-size: 13px; color: #5a5249; }
+td:not(:first-child) { text-align: right; font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--ink); }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(40,34,28,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 999;
+}
+.modal-panel {
+  width: min(980px,100%);
+  max-height: 88vh;
+  overflow: auto;
+  background: #fffdf9;
+  border-radius: 26px;
+  box-shadow: 0 24px 70px rgba(20,18,15,0.22);
+  border: 1px solid rgba(139,126,106,0.16);
+  padding: 24px;
+}
+.modal-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+.close-btn {
+  border: none;
+  background: rgba(139,126,106,0.08);
+  color: var(--ink);
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 20px;
+}
+.tab-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.tab-btn {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: #7a7267;
+  padding: 9px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.tab-btn.active { background: #3d3832; color: #faf7f2; border-color: #3d3832; }
+.modal-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 14px; }
+.modal-card {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(139,126,106,0.04);
+  border: 1px solid rgba(139,126,106,0.10);
+}
+.modal-card h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 23px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.modal-card p { font-size: 13px; color: #665e54; margin-bottom: 8px; }
+.modal-card small { font-size: 12px; color: #8b7e6a; }
+
+.footer-note { margin-top: 46px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 11px; color: #b5aa9a; }
+
+
+.matrix-note { font-size: 12px; color: #9a8f82; margin-top: 10px; }
+.matrix-point { cursor: pointer; }
+.matrix-point .matrix-dot { box-shadow: 0 0 0 6px rgba(139,126,106,0.07); }
+.matrix-point.active .matrix-dot, .matrix-point:hover .matrix-dot { box-shadow: 0 0 0 8px rgba(139,106,70,0.12), 0 12px 22px rgba(61,56,50,0.18); }
+.matrix-point.active .matrix-dot {
+  transform: scale(1.18);
+  box-shadow: 0 12px 22px rgba(61,56,50,0.24);
+}
+.matrix-dot { transition: transform 0.18s ease, box-shadow 0.18s ease; }
+.matrix-tag { pointer-events: none; }
+.matrix-detail-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--ink);
+  margin: 10px 0 14px;
+}
+.matrix-detail-copy { font-size: 14px; color: #5a5249; margin-bottom: 10px; }
+.persona-header { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; margin-bottom: 10px; }
+.persona-share { font-size: 12px; color: #b5aa9a; white-space: nowrap; }
+.persona-meta { font-size: 14px; color: #8b7e6a; margin-bottom: 8px; }
+.persona-cadence { font-size: 14px; color: #7a7267; margin-bottom: 8px; }
+.persona-spend {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.persona-value {
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--ink);
+  
+}
+
+.local-toggle { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.clickable-surface {
+  position: relative;
+  background: linear-gradient(180deg, rgba(139,126,106,0.09), rgba(139,126,106,0.05));
+  border: 1px solid rgba(139,126,106,0.18);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 8px 22px rgba(61,56,50,0.05);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.clickable-surface:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 14px 28px rgba(61,56,50,0.10);
+  border-color: rgba(139,106,70,0.28);
+  background: linear-gradient(180deg, rgba(139,106,70,0.11), rgba(139,126,106,0.06));
+}
+.clickable-surface:focus-visible {
+  outline: 2px solid rgba(139,106,70,0.35);
+  outline-offset: 2px;
+}
+.clickable-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: #8b7e6a;
+}
+.clickable-cue::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #8b6a46;
+  opacity: 0.8;
+}
+.metric-button.clickable-surface .metric-sub { color: #8b7e6a; }
+
+
+.stackbar.clickable { height: 16px; cursor: pointer; }
+.stackbar.clickable > div { transition: opacity 0.18s ease, transform 0.18s ease; cursor: pointer; }
+.stackbar.clickable:hover > div { opacity: 0.9; }
+.legend-item.active { background: rgba(139,126,106,0.10); border: 1px solid rgba(139,126,106,0.14); }
+.detail-panel {
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(139,126,106,0.04);
+  border: 1px solid rgba(139,126,106,0.10);
+}
+.detail-panel h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.matrix-compact {
+  min-width: 0;
+  padding: 16px 14px;
+}
+.matrix-compact .card-title {
+  font-size: 24px !important;
+  line-height: 1.02;
+  margin-bottom: 6px;
+}
+.matrix-compact .card-copy {
+  font-size: 13px;
+  line-height: 1.45;
+}
+.matrix-compact .matrix-detail-price {
+  font-size: 24px;
+  margin: 8px 0 12px;
+}
+.matrix-compact .score-grid {
+  gap: 8px;
+}
+.matrix-compact .matrix-detail-copy {
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.matrix-compact .card-list li {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.detail-kicker { font-size: 11px; letter-spacing: 0.08em; color: #9a8f82; margin-bottom: 8px; }
+.detail-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.detail-copy { font-size: 14px; color: #5a5249; }
+.wallet-wrap { display: grid; gap: 12px; }
+.wallet-bar {
+  width: 100%;
+  display: flex;
+  height: 28px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #eee7db;
+}
+.wallet-segment { position: relative; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; letter-spacing: 0.03em; }
+.wallet-segment span { pointer-events: none; }
+.wallet-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 10px; }
+.wallet-card {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(139,126,106,0.04);
+  border: 1px solid rgba(139,126,106,0.08);
+}
+.wallet-card strong { display: block; font-size: 13px; color: var(--ink); margin-bottom: 4px; }
+.wallet-card span { display: block; font-size: 12px; color: #8b7e6a; }
+.timeline-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap: 12px; }
+.timeline-step {
+  padding: 18px 16px;
+  border-radius: 18px;
+  background: rgba(139,126,106,0.04);
+  border: 1px solid rgba(139,126,106,0.10);
+}
+.timeline-step-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.timeline-step-title { font-size: 14px; color: var(--ink); margin-bottom: 4px; font-weight: 500; }
+.timeline-step-time { font-size: 11px; color: #8b7e6a; margin-bottom: 8px; letter-spacing: 0.06em; }
+.timeline-step-copy { font-size: 13px; color: #5a5249; }
+.risk-layout { display: grid; grid-template-columns: minmax(0,1fr) minmax(280px,.9fr); gap: 16px; align-items: start; }
+.risk-shell { position: relative; padding: 18px 20px 38px 52px; }
+.risk-chart {
+  position: relative;
+  height: 340px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(to right, rgba(139,126,106,0.06) 1px, transparent 1px),
+    linear-gradient(to top, rgba(139,126,106,0.06) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(139,126,106,0.04), rgba(139,126,106,0.01));
+  background-size: 25% 25%, 25% 25%, 100% 100%;
+  overflow: hidden;
+}
+.risk-axis-title { position: absolute; font-size: 12px; color: #8b7e6a; letter-spacing: 0.06em; }
+.risk-axis-title.x { left: 50%; bottom: 8px; transform: translateX(-50%); }
+.risk-axis-title.y { left: 6px; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: left top; }
+.risk-axis { position: absolute; font-size: 12px; color: #8b7e6a; }
+.risk-axis.x-left { left: 18px; bottom: 12px; }
+.risk-axis.x-right { right: 18px; bottom: 12px; }
+.risk-axis.y-bottom { right: -34px; bottom: 24px; transform: rotate(-90deg); transform-origin: bottom right; }
+.risk-axis.y-top { right: -34px; top: 20px; transform: rotate(-90deg); transform-origin: top right; }
+.risk-point {
+  position: absolute;
+  transform: translate(-50%,50%);
+  cursor: pointer;
+}
+ .risk-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 2px solid #faf7f2;
+  box-shadow: 0 8px 16px rgba(61,56,50,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #fff;
+}
+.risk-point.active .risk-dot { transform: scale(1.16); box-shadow: 0 12px 22px rgba(61,56,50,0.24); }
+.risk-list { display: grid; gap: 6px; margin-top: 12px; }
+.risk-list button {
+  border: 1px solid rgba(139,126,106,0.08);
+  background: transparent;
+  border-radius: 12px;
+  padding: 8px 10px;
+  text-align: left;
+  color: #5a5249;
+  font-size: 13px;
+}
+.risk-list button.active { background: rgba(139,126,106,0.06); }
+.dual-bars { display: grid; gap: 18px; }
+.bar-group { display: grid; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: 110px 1fr 70px; gap: 10px; align-items: center; }
+.bar-label { font-size: 12px; color: #7a7267; text-align: right; }
+.bar-track { height: 18px; border-radius: 999px; background: #eee7db; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 999px; opacity: 0.78; }
+.bar-value { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--ink); text-align: right; }
+.bar-kicker { font-size: 12px; color: #8b7e6a; margin-bottom: 4px; }
+
+@media (max-width: 980px) {
+  .hero-grid, .matrix-wrap { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .metric-meta, .output-grid { grid-template-columns: 1fr; }
+  .page { padding-top: 32px; }
+  .card, .modal-panel { padding: 18px; }
+  .hero-thesis { max-width: none; }
+  .score-row { grid-template-columns: 100px 1fr auto; }
+}
+
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useCallback } = React;
+
+const { useState, useCallback, useMemo } = React;
+
+const COLORS = {
+  ink: "#3d3832",
+  muted: "#8b7e6a",
+  build: "#6f6454",
+  mechanical: "#958673",
+  ffe: "#b19f89",
+  preopen: "#d0c3b0",
+  permits: "#8c7d6d",
+  reserve: "#4f4943",
+  primary: "#3d3832",
+  green: "#7a9b7c",
+  amber: "#b98b43",
+  red: "#b6654a",
+};
 
 const SCENARIOS = {
   conservative: {
-    large: { initiationFee:0,monthlyDues:197,memberCount:600,walkInVisitsMonth:1500,walkInAvgSpend:65,fAndBAttach:0.35,avgFandBSpend:22,treatmentAttach:0.20,avgTreatmentSpend:120,buildoutPerSqFt:600,sqFt:18000,leasePerSqFt:75,preOpenMonths:18,staffCount:50,avgSalary:72000,utilityAnnual:620000,ebitdaMargin:0.12,breakEvenMonth:24 },
-    club: { initiationFee:25000,monthlyDues:1200,memberCount:180,fAndBAttach:0.55,avgFandBSpend:65,treatmentAttach:0.25,avgTreatmentSpend:180,buildoutPerSqFt:550,sqFt:3500,leasePerSqFt:80,preOpenMonths:12,staffCount:18,avgSalary:78000,utilityAnnual:180000,ebitdaMargin:0.15,breakEvenMonth:20,phase2SqFt:9000,phase2BuildoutPerSqFt:500,phase2Members:350 },
+    large: { initiationFee:0,monthlyDues:197,memberCount:600,walkInVisitsMonth:1500,walkInAvgSpend:65,fAndBAttach:0.35,avgFandBSpend:22,treatmentAttach:0.20,avgTreatmentSpend:120,buildoutPerSqFt:600,sqFt:18000,leasePerSqFt:75,preOpenMonths:18,staffCount:50,avgSalary:72000,utilityAnnual:620000,targetMargin:0.12,annualChurn:0 },
+    club: { initiationFee:25000,monthlyDues:1200,memberCount:180,fAndBAttach:0.55,avgFandBSpend:65,treatmentAttach:0.25,avgTreatmentSpend:180,buildoutPerSqFt:550,sqFt:3500,leasePerSqFt:80,preOpenMonths:12,staffCount:18,avgSalary:78000,utilityAnnual:180000,targetMargin:0.15,annualChurn:0.20,phase2SqFt:9000,phase2BuildoutPerSqFt:500,phase2Members:350 },
   },
   base: {
-    large: { initiationFee:300,monthlyDues:225,memberCount:850,walkInVisitsMonth:2500,walkInAvgSpend:70,fAndBAttach:0.45,avgFandBSpend:26,treatmentAttach:0.28,avgTreatmentSpend:135,buildoutPerSqFt:500,sqFt:18000,leasePerSqFt:65,preOpenMonths:14,staffCount:45,avgSalary:70000,utilityAnnual:520000,ebitdaMargin:0.20,breakEvenMonth:16 },
-    club: { initiationFee:35000,monthlyDues:1500,memberCount:250,fAndBAttach:0.65,avgFandBSpend:75,treatmentAttach:0.30,avgTreatmentSpend:200,buildoutPerSqFt:450,sqFt:3500,leasePerSqFt:70,preOpenMonths:10,staffCount:15,avgSalary:75000,utilityAnnual:150000,ebitdaMargin:0.22,breakEvenMonth:14,phase2SqFt:9000,phase2BuildoutPerSqFt:450,phase2Members:500 },
+    large: { initiationFee:300,monthlyDues:225,memberCount:850,walkInVisitsMonth:2500,walkInAvgSpend:70,fAndBAttach:0.45,avgFandBSpend:26,treatmentAttach:0.28,avgTreatmentSpend:135,buildoutPerSqFt:500,sqFt:18000,leasePerSqFt:65,preOpenMonths:14,staffCount:45,avgSalary:70000,utilityAnnual:520000,targetMargin:0.20,annualChurn:0 },
+    club: { initiationFee:35000,monthlyDues:1500,memberCount:250,fAndBAttach:0.65,avgFandBSpend:75,treatmentAttach:0.30,avgTreatmentSpend:200,buildoutPerSqFt:450,sqFt:3500,leasePerSqFt:70,preOpenMonths:10,staffCount:15,avgSalary:75000,utilityAnnual:150000,targetMargin:0.22,annualChurn:0.15,phase2SqFt:9000,phase2BuildoutPerSqFt:450,phase2Members:500 },
   },
   optimistic: {
-    large: { initiationFee:500,monthlyDues:250,memberCount:1100,walkInVisitsMonth:3500,walkInAvgSpend:75,fAndBAttach:0.55,avgFandBSpend:30,treatmentAttach:0.35,avgTreatmentSpend:150,buildoutPerSqFt:450,sqFt:18000,leasePerSqFt:58,preOpenMonths:12,staffCount:50,avgSalary:70000,utilityAnnual:480000,ebitdaMargin:0.28,breakEvenMonth:10 },
-    club: { initiationFee:50000,monthlyDues:2000,memberCount:300,fAndBAttach:0.70,avgFandBSpend:85,treatmentAttach:0.35,avgTreatmentSpend:220,buildoutPerSqFt:400,sqFt:3500,leasePerSqFt:65,preOpenMonths:9,staffCount:15,avgSalary:75000,utilityAnnual:140000,ebitdaMargin:0.28,breakEvenMonth:10,phase2SqFt:9000,phase2BuildoutPerSqFt:400,phase2Members:600 },
+    large: { initiationFee:500,monthlyDues:250,memberCount:1100,walkInVisitsMonth:3500,walkInAvgSpend:75,fAndBAttach:0.55,avgFandBSpend:30,treatmentAttach:0.35,avgTreatmentSpend:150,buildoutPerSqFt:450,sqFt:18000,leasePerSqFt:58,preOpenMonths:12,staffCount:50,avgSalary:70000,utilityAnnual:480000,targetMargin:0.28,annualChurn:0 },
+    club: { initiationFee:50000,monthlyDues:2000,memberCount:300,fAndBAttach:0.70,avgFandBSpend:85,treatmentAttach:0.35,avgTreatmentSpend:220,buildoutPerSqFt:400,sqFt:3500,leasePerSqFt:65,preOpenMonths:9,staffCount:15,avgSalary:75000,utilityAnnual:140000,targetMargin:0.28,annualChurn:0.12,phase2SqFt:9000,phase2BuildoutPerSqFt:400,phase2Members:600 },
   },
 };
 
-const fmt=(n)=>{if(!n&&n!==0)return"$0";if(Math.abs(n)>=1e9)return"$"+(n/1e9).toFixed(1)+"bn";if(Math.abs(n)>=1e6)return"$"+(n/1e6).toFixed(1)+"m";if(Math.abs(n)>=1e3)return"$"+(n/1e3).toFixed(0)+"k";return"$"+n.toFixed(0)};
-const num=(n)=>{if(!n&&n!==0)return"0";if(Math.abs(n)>=1e3)return(n/1e3).toFixed(1)+"k";return String(n)};
-const pct=(n)=>{if(!n&&n!==0)return"0%";return(n*100).toFixed(0)+"%"};
+const fmt = (n) => {
+  if (!n && n !== 0) return "$0";
+  if (Math.abs(n) >= 1e9) return "$" + (n / 1e9).toFixed(1) + "bn";
+  if (Math.abs(n) >= 1e6) return "$" + (n / 1e6).toFixed(1) + "m";
+  if (Math.abs(n) >= 1e3) return "$" + (n / 1e3).toFixed(0) + "k";
+  return "$" + n.toFixed(0);
+};
+const num = (n) => {
+  if (!n && n !== 0) return "0";
+  if (Math.abs(n) >= 1e3) return (n / 1e3).toFixed(1) + "k";
+  return String(n);
+};
+const pct = (n) => {
+  if (!n && n !== 0) return "0%";
+  return (n * 100).toFixed(0) + "%";
+};
+const whole = (n) => Math.round(n).toLocaleString();
+const fmtMonths = (n) => `${Number(n).toFixed(n % 1 ? 1 : 0)} mo`;
+const deltaFmt = (n) => `${n >= 0 ? "+" : "-"}${fmt(Math.abs(n))}`;
 
-function calc(d,isClub){
-  const buildout=d.buildoutPerSqFt*d.sqFt;
-  const preOpenRent=(d.leasePerSqFt*d.sqFt/12)*d.preOpenMonths;
-  const preOpenOther=d.preOpenMonths*80000;
-  const ffe=isClub?250000:600000;
-  const mechanical=isClub?0:2000000;
-  const permits=isClub?150000:450000;
-  const wcReserve=isClub?350000:1500000;
-  const totalCapital=buildout+mechanical+ffe+preOpenRent+preOpenOther+permits+wcReserve;
-  const membershipRev=d.memberCount*d.monthlyDues*12;
-  const initRev=d.memberCount*(d.initiationFee||0);
-  const memberVisits=d.memberCount*1.1;
-  const walkInVisits=d.walkInVisitsMonth||0;
-  const totalVisits=memberVisits+walkInVisits;
-  const fAndBRev=totalVisits*12*d.fAndBAttach*d.avgFandBSpend;
-  const treatmentRev=totalVisits*12*d.treatmentAttach*d.avgTreatmentSpend;
-  const walkInRev=walkInVisits*(d.walkInAvgSpend||0)*12;
-  const totalRev=membershipRev+fAndBRev+treatmentRev+walkInRev;
-  const rent=d.leasePerSqFt*d.sqFt;
-  const staff=d.staffCount*d.avgSalary;
-  const otherOpex=isClub?300000:800000;
-  const totalOpex=rent+staff+d.utilityAnnual+otherOpex;
-  const ebitda=totalRev*d.ebitdaMargin;
-  const monthlyBE=totalOpex/12;
-  const p2Cap=isClub&&d.phase2SqFt?d.phase2BuildoutPerSqFt*d.phase2SqFt+800000:0;
-  return{totalCapital,buildout,mechanical,ffe,preOpenRent,preOpenOther,permits,wcReserve,totalRev,membershipRev,fAndBRev,treatmentRev,walkInRev,initRev,totalOpex,rent,staff,ebitda,ebitdaMargin:d.ebitdaMargin,monthlyBE,breakEvenMonth:d.breakEvenMonth,memberCount:d.memberCount,totalVisits,p2Cap};
+function revenueAndCosts(d, isClub) {
+  const membershipRev = d.memberCount * d.monthlyDues * 12;
+  const churnRate = d.annualChurn || 0;
+  const initRevSteadyState = d.memberCount * churnRate * (d.initiationFee || 0);
+  const initRevYear1 = d.memberCount * (d.initiationFee || 0);
+  const memberVisits = d.memberCount * 1.1;
+  const walkInVisits = d.walkInVisitsMonth || 0;
+  const totalVisits = memberVisits + walkInVisits;
+  const fAndBRev = totalVisits * 12 * d.fAndBAttach * d.avgFandBSpend;
+  const treatmentRev = totalVisits * 12 * d.treatmentAttach * d.avgTreatmentSpend;
+  const walkInRev = walkInVisits * (d.walkInAvgSpend || 0) * 12;
+  const totalRev = membershipRev + initRevSteadyState + fAndBRev + treatmentRev + walkInRev;
+  const cogs = fAndBRev * 0.35 + treatmentRev * 0.45 + walkInRev * 0.10;
+  const rent = d.leasePerSqFt * d.sqFt;
+  const staff = d.staffCount * d.avgSalary;
+  return { membershipRev, initRevSteadyState, initRevYear1, fAndBRev, treatmentRev, walkInRev, totalRev, cogs, rent, staff, totalVisits, memberVisits, walkInVisits };
 }
 
-const SER="'Cormorant Garamond', serif";
-
-function Slider({label,value,min,max,step,format,onChange}){
-  return(<div style={{marginBottom:18}}>
-    <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-      <span style={{fontSize:13,color:"#7a7267"}}>{label}</span>
-      <span style={{fontSize:14,fontFamily:SER,fontWeight:600,color:"#3d3832"}}>{format?format(value):value}</span>
-    </div>
-    <input type="range" min={min} max={max} step={step} value={value} onChange={e=>onChange(Number(e.target.value))}/>
-  </div>);
+function computeBalancingCost(d, isClub) {
+  const rc = revenueAndCosts(d, isClub);
+  const targetEbitda = rc.totalRev * d.targetMargin;
+  const explicitCosts = rc.rent + rc.staff + d.utilityAnnual + rc.cogs;
+  const bal = rc.totalRev - targetEbitda - explicitCosts;
+  return Math.max(bal, 0);
 }
 
-function Callout({label,value,sub}){
-  return(<div style={{flex:1,minWidth:180,padding:"28px 20px",background:"rgba(139,126,106,0.06)",borderRadius:2}}>
-    <div style={{fontSize:11,letterSpacing:"0.08em",color:"#8b7e6a",marginBottom:10}}>{label}</div>
-    <div style={{fontSize:32,fontFamily:SER,fontWeight:300,color:"#3d3832",lineHeight:1.1}}>{value}</div>
-    {sub&&<div style={{fontSize:12,color:"#9a8f82",marginTop:8,lineHeight:1.5}}>{sub}</div>}
-  </div>);
+function calc(d, isClub, balCost) {
+  const rc = revenueAndCosts(d, isClub);
+  const totalOpex = rc.rent + rc.staff + d.utilityAnnual + rc.cogs + balCost;
+  const profit = rc.totalRev - totalOpex;
+  const profitMargin = rc.totalRev > 0 ? profit / rc.totalRev : 0;
+  const monthlyOpex = totalOpex / 12;
+
+  const reserveMonths = d.reserveMonths ?? (isClub ? 3 : 4);
+  const buildout = d.buildoutPerSqFt * d.sqFt;
+  const preOpenRent = (d.leasePerSqFt * d.sqFt / 12) * d.preOpenMonths;
+  const preOpenOther = d.preOpenMonths * (d.preOpenMonthlyBurn || 80000);
+  const ffe = d.ffeOverride ?? (isClub ? 250000 : 600000);
+  const mechanical = d.mechanicalOverride ?? (isClub ? 0 : 2000000);
+  const permits = d.permitsOverride ?? (isClub ? 150000 : 450000);
+  const wcReserve = d.wcReserveOverride ?? (monthlyOpex * reserveMonths);
+  const totalCapital = buildout + mechanical + ffe + preOpenRent + preOpenOther + permits + wcReserve;
+  const p2Cap = isClub && d.phase2SqFt ? d.phase2BuildoutPerSqFt * d.phase2SqFt + 800000 : 0;
+  const paybackMonths = profit > 0 ? Math.round(totalCapital / (profit / 12)) : null;
+
+  return {
+    totalCapital,
+    buildout,
+    mechanical,
+    ffe,
+    preOpenRent,
+    preOpenOther,
+    permits,
+    wcReserve,
+    reserveMonths,
+    p2Cap,
+    capexPerSqFt: totalCapital / d.sqFt,
+    openingTimeline: d.preOpenMonths,
+    ...rc,
+    totalOpex,
+    balCost,
+    profit,
+    profitMargin,
+    monthlyOpex,
+    paybackMonths,
+    memberCount: d.memberCount,
+  };
 }
 
-function Section({title,summary,children}){
-  const[open,setOpen]=useState(false);
-  return(<div style={{borderBottom:"1px solid rgba(139,126,106,0.12)"}}>
-    <button onClick={()=>setOpen(!open)} style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"20px 0",background:"none",border:"none",cursor:"pointer",textAlign:"left"}}>
-      <div style={{flex:1}}>
-        <div style={{fontSize:15,fontFamily:SER,fontWeight:500,color:"#3d3832"}}>{title}</div>
-        {!open&&summary&&<div style={{fontSize:13,color:"#9a8f82",marginTop:4}}>{summary}</div>}
+function fmtPayback(months) {
+  if (months === null || months > 120) return "n/a";
+  if (months >= 12) return Math.round((months / 12) * 10) / 10 + " yrs";
+  return months + " mo";
+}
+
+function Slider({ label, value, min, max, step, format, onChange }) {
+  return (
+    <div className="slider-block">
+      <div className="slider-head">
+        <span>{label}</span>
+        <span className="slider-value">{format ? format(value) : value}</span>
       </div>
-      <span style={{fontSize:18,color:"#b5aa9a",transform:open?"rotate(45deg)":"none",transition:"transform 0.2s",marginLeft:16,flexShrink:0}}>+</span>
+      <input type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </div>
+  );
+}
+
+function Tbl({ headers, rows }) {
+  return (
+    <div className="table-wrap">
+      <table>
+        <thead>
+          <tr>{headers.map((h, i) => <th key={i}>{h}</th>)}</tr>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={i}>
+              {row.map((cell, j) => <td key={j}>{cell}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function Bul({ items }) {
+  return (
+    <ul className="card-list">
+      {items.map((item, i) => <li key={i}>{item}</li>)}
+    </ul>
+  );
+}
+
+function PillButton({ active, children, onClick }) {
+  return (
+    <button className={`pill ${active ? "active" : ""}`} onClick={onClick}>
+      {children}
     </button>
-    {open&&<div style={{paddingBottom:28}}>{children}</div>}
-  </div>);
+  );
 }
 
-function Tbl({headers,rows}){
-  return(<div style={{overflowX:"auto"}}>
-    <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,margin:"12px 0 16px"}}>
-      <thead><tr>{headers.map((h,i)=><th key={i} style={{textAlign:i===0?"left":"right",padding:"10px 10px",borderBottom:"1px solid #e0d9cf",fontWeight:400,color:"#8b7e6a",fontSize:11,letterSpacing:"0.04em",whiteSpace:"nowrap"}}>{h}</th>)}</tr></thead>
-      <tbody>{rows.map((row,i)=><tr key={i}>{row.map((c,j)=><td key={j} style={{textAlign:j===0?"left":"right",padding:"9px 10px",borderBottom:"1px solid rgba(224,217,207,0.4)",color:j===0?"#5a5249":"#3d3832",fontFamily:j===0?"inherit":SER,fontSize:j===0?13:14}}>{c}</td>)}</tr>)}</tbody>
-    </table>
-  </div>);
+function StackBar({ items, total, activeLabel, onSelect }) {
+  return (
+    <>
+      <div className={`stackbar ${onSelect ? "clickable" : ""}`}>
+        {items.map((item) => (
+          <div
+            key={item.label}
+            onClick={onSelect ? () => onSelect(item.label) : undefined}
+            style={{ width: `${(item.value / total) * 100}%`, background: item.color, opacity: !activeLabel || activeLabel === item.label ? 1 : 0.62 }}
+          />
+        ))}
+      </div>
+      <div className="legend-grid">
+        {items.map((item) => (
+          <div
+            className={`legend-item ${activeLabel === item.label ? "active" : ""}`}
+            key={item.label}
+            onClick={onSelect ? () => onSelect(item.label) : undefined}
+            style={{ cursor: onSelect ? "pointer" : "default" }}
+          >
+            <div className="legend-swatch" style={{ background: item.color }} />
+            <div className="legend-text">
+              <strong>{item.label}</strong>
+              <span>{fmt(item.value)} · {pct(item.value / total)}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
 }
 
-function Bul({items}){
-  return(<ul style={{listStyle:"none",padding:0,margin:"10px 0"}}>
-    {items.map((item,i)=>{
-      const text=typeof item==="string"?item:item.text;
-      const sub=typeof item==="object"?item.sub:null;
-      return(<li key={i} style={{padding:"5px 0 5px 16px",position:"relative",fontSize:14,color:"#5a5249",lineHeight:1.6}}>
-        <span style={{position:"absolute",left:0,color:"#b5aa9a"}}>-</span>{text}
-        {sub&&<ul style={{listStyle:"none",padding:0,marginTop:4}}>
-          {sub.map((s,j)=><li key={j} style={{padding:"3px 0 3px 20px",position:"relative",fontSize:13,color:"#7a7267"}}>
-            <span style={{position:"absolute",left:4,color:"#c8bfb2"}}>-</span>{s}
-          </li>)}
-        </ul>}
-      </li>);
-    })}
-  </ul>);
-}
-
-function H3({children}){return <h3 style={{fontSize:14,fontFamily:SER,fontWeight:500,color:"#8b7e6a",letterSpacing:"0.04em",margin:"22px 0 8px"}}>{children}</h3>;}
-
-function LiveMetric({label,value,baseValue}){
-  const changed=value!==baseValue;
-  return(<div style={{marginBottom:14}}>
-    <div style={{fontSize:11,color:"#8b7e6a",letterSpacing:"0.05em",marginBottom:3}}>{label}</div>
-    <div style={{fontSize:22,fontFamily:SER,fontWeight:400,color:changed?"#6b5d3e":"#3d3832",transition:"color 0.2s"}}>
-      {value}{changed&&<span style={{fontSize:11,color:"#b5aa9a",marginLeft:8,fontFamily:"'DM Sans',sans-serif"}}>was {baseValue}</span>}
+function DetailPanel({ eyebrow, title, value, copy, bullets }) {
+  return (
+    <div className="detail-panel clickable-surface">
+      {eyebrow && <div className="detail-kicker">{eyebrow}</div>}
+      <h4>{title}</h4>
+      {value && <div className="detail-value">{value}</div>}
+      {copy && <div className="detail-copy">{copy}</div>}
+      {bullets && bullets.length > 0 && <div style={{ marginTop: 10 }}><Bul items={bullets} /></div>}
     </div>
-  </div>);
+  );
 }
 
-function App(){
-  const[scenario,setScenario]=useState("base");
-  const[model,setModel]=useState("club");
-  const[overrides,setOverrides]=useState({});
-  const isClub=model==="club";
-  const baseData=isClub?SCENARIOS[scenario].club:SCENARIOS[scenario].large;
-  const d={...baseData,...overrides};
-  const m=calc(d,isClub);
-  const mBase=calc(baseData,isClub);
-  const otherData=isClub?SCENARIOS[scenario].large:SCENARIOS[scenario].club;
-  const mOther=calc(otherData,!isClub);
-  const hasOverrides=Object.keys(overrides).length>0;
-  const reset=useCallback(()=>setOverrides({}),[]);
-  const setO=useCallback((k,v)=>setOverrides(p=>({...p,[k]:v})),[]);
-  const sw=(v)=>{setModel(v);setOverrides({});};
-  const ss=(v)=>{setScenario(v);setOverrides({});};
-  const cons=calc(SCENARIOS.conservative[isClub?"club":"large"],isClub);
-  const base=calc(SCENARIOS.base[isClub?"club":"large"],isClub);
-  const opt=calc(SCENARIOS.optimistic[isClub?"club":"large"],isClub);
-
-  return(<div style={{maxWidth:840,margin:"0 auto",padding:"44px 20px 72px"}}>
-    <div style={{fontSize:11,letterSpacing:"0.12em",color:"#b5aa9a",marginBottom:12}}>feasibility study / san francisco</div>
-    <h1 style={{fontSize:34,fontFamily:SER,fontWeight:300,color:"#3d3832",margin:"0 0 6px",lineHeight:1.15}}>{isClub?"bathhouse reserve":"bathhouse sf"}</h1>
-    <div style={{fontSize:12,color:"#b5aa9a",marginBottom:32,letterSpacing:"0.04em"}}>{isClub?"private wellness and social club":"large format bathhouse and wellness center"} / april 2026</div>
-
-    <div style={{display:"flex",gap:0,marginBottom:24,background:"rgba(139,126,106,0.08)",borderRadius:2,overflow:"hidden",maxWidth:440}}>
-      {[{key:"club",label:"bathhouse reserve"},{key:"large",label:"bathhouse sf"}].map(o=>
-        <button key={o.key} onClick={()=>sw(o.key)} style={{flex:1,padding:"11px 14px",border:"none",cursor:"pointer",fontSize:13,letterSpacing:"0.03em",transition:"all 0.2s",background:model===o.key?"#3d3832":"transparent",color:model===o.key?"#faf7f2":"#8b7e6a"}}>{o.label}</button>
-      )}
+function WalletShareBar({ segments, note }) {
+  const total = segments.reduce((sum, segment) => sum + segment.value, 0);
+  return (
+    <div className="wallet-wrap">
+      <div className="wallet-bar">
+        {segments.map((segment) => (
+          <div className="wallet-segment" key={segment.label} style={{ width: `${(segment.value / total) * 100}%`, background: segment.color }}>
+            <span>{segment.label}</span>
+          </div>
+        ))}
+      </div>
+      <div className="wallet-grid">
+        {segments.map((segment) => (
+          <div className="wallet-card" key={segment.label}>
+            <strong>{segment.label}</strong>
+            <span>{fmt(segment.value)}/mo</span>
+            <span>{segment.note}</span>
+          </div>
+        ))}
+      </div>
+      <div className="section-note" style={{ maxWidth: "none" }}>{note}</div>
     </div>
+  );
+}
 
-    <div style={{display:"flex",gap:0,marginBottom:36,maxWidth:340}}>
-      {["conservative","base","optimistic"].map(s=>
-        <button key={s} onClick={()=>ss(s)} style={{flex:1,padding:"9px 10px",cursor:"pointer",fontSize:12,letterSpacing:"0.05em",border:"1px solid rgba(139,126,106,0.15)",background:scenario===s?"rgba(139,126,106,0.15)":"transparent",color:scenario===s?"#3d3832":"#b5aa9a"}}>{s}</button>
-      )}
+function TimelineSection({ steps }) {
+  return (
+    <div className="timeline-grid">
+      {steps.map((step) => (
+        <div className="timeline-step" key={step.number}>
+          <div className="timeline-step-number">{step.number}</div>
+          <div className="timeline-step-title">{step.title}</div>
+          <div className="timeline-step-time">{step.time}</div>
+          <div className="timeline-step-copy">{step.copy}</div>
+        </div>
+      ))}
     </div>
+  );
+}
 
-    <div style={{marginBottom:44,fontSize:15,lineHeight:1.75,color:"#5a5249"}}>
-      {isClub
-        ?"bathhouse reserve is a uhnw private wellness and social club targeting "+d.memberCount+" members with "+fmt(d.initiationFee)+" initiation fees and "+fmt(d.monthlyDues)+"/mo dues. phase 1 requires "+fmt(m.totalCapital)+" for a "+num(d.sqFt)+" sq ft intimate concept in jackson square or pacific heights, scaling to a 9k sq ft flagship in phase 2 ("+fmt(m.p2Cap)+" additional). the model generates "+fmt(m.totalRev)+"/yr at maturity with "+pct(m.ebitdaMargin)+" ebitda margins, reaching breakeven by month "+m.breakEvenMonth+". the phased approach de-risks capital deployment and creates a compelling fundraising position for expansion. go, with conviction on the intimate first format."
-        :"bathhouse sf is a large format bathhouse and wellness center requiring "+fmt(m.totalCapital)+" in total capital for an "+num(d.sqFt)+" sq ft facility. the hybrid membership-plus-walk-in model targets "+num(d.memberCount)+" members and "+num(d.walkInVisitsMonth)+"/mo walk-in visits, generating "+fmt(m.totalRev)+"/yr at maturity with "+pct(m.ebitdaMargin)+" ebitda margins. breakeven arrives by month "+m.breakEvenMonth+". the concept is viable but capital-intensive with meaningful ramp risk. sf's smaller population (870k vs nyc's 8.3m) requires 3-4x the per-capita penetration of bathhouse manhattan. conditional go, pending creative capital structure."
+function RiskMatrix({ items, activeTitle, onSelect }) {
+  const probability = { low: 16, "low-med": 32, medium: 50, "med-high": 68, high: 84 };
+  const impact = { low: 16, medium: 40, high: 66, critical: 86 };
+
+  return (
+    <div className="risk-shell">
+      <div className="risk-axis-title y">impact</div>
+      <div className="risk-axis-title x">probability</div>
+      <div className="risk-chart">
+        <div className="risk-axis x-left">lower</div>
+        <div className="risk-axis x-right">higher</div>
+        <div className="risk-axis y-bottom">lower</div>
+        <div className="risk-axis y-top">higher</div>
+        {items.map((item, i) => (
+          <div
+            key={item.title}
+            className={`risk-point ${activeTitle === item.title ? "active" : ""}`}
+            style={{ left: `${probability[item.probability] || 50}%`, bottom: `${impact[item.impact] || 40}%` }}
+            onClick={() => onSelect(item.title)}
+          >
+            <div className="risk-dot" style={{ background: item.color }}>{i + 1}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SimpleBars({ title, items, total }) {
+  return (
+    <div className="bar-group">
+      <div className="bar-kicker">{title} {fmt(total)}/yr</div>
+      {items.map((item) => (
+        <div className="bar-row" key={item.label}>
+          <div className="bar-label">{item.label}</div>
+          <div className="bar-track">
+            <div className="bar-fill" style={{ width: `${(item.value / total) * 100}%`, background: item.color || "#8b7e6a" }} />
+          </div>
+          <div className="bar-value">{fmt(item.value)}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ScoreRow({ label, value, color }) {
+  return (
+    <div className="score-row">
+      <span>{label}</span>
+      <div className="score-track">
+        <div className="score-fill" style={{ width: `${value * 10}%`, background: color }} />
+      </div>
+      <span>{value}/10</span>
+    </div>
+  );
+}
+
+function LocationCard({ name, subtitle, scores, notes }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="card card-tight expando" onClick={() => setOpen(!open)}>
+      <div className="expando-header" style={{ alignItems: "flex-start" }}>
+        <div>
+          <div className="card-title" style={{ fontSize: 30, marginBottom: 6 }}>{name}</div>
+          <div className="card-copy">{subtitle}</div>
+        </div>
+        <span className="badge medium">{open ? "hide details" : "show details"}</span>
+      </div>
+      <div className="score-grid">
+        {scores.map((score) => <ScoreRow key={score.label} {...score} />)}
+      </div>
+      {open && <Bul items={notes} />}
+    </div>
+  );
+}
+
+function MatrixScoreRow({ label, value, color }) {
+  return (
+    <div className="score-row">
+      <span>{label}</span>
+      <div className="score-track">
+        <div className="score-fill" style={{ width: `${value * 20}%`, background: color }} />
+      </div>
+      <span>{value}/5</span>
+    </div>
+  );
+}
+
+function MatrixDetailCard({ point }) {
+  if (!point) return null;
+  return (
+    <div className="card card-tight clickable-surface matrix-compact">
+      <div className="eyebrow">selected comp</div>
+      <div className="card-title" style={{ fontSize: 30 }}>{point.label}</div>
+      <div className="card-copy">{point.subtitle}</div>
+      <div className="matrix-detail-price">{point.price}</div>
+      <div className="score-grid">
+        {point.scores.map((score) => <MatrixScoreRow key={score.label} {...score} />)}
+      </div>
+      <div className="matrix-detail-copy" style={{ marginTop: 14 }}>why it matters</div>
+      <Bul items={point.notes} />
+    </div>
+  );
+}
+
+function PersonaCard({ name, share, profile, cadence, spend, value }) {
+  return (
+    <div className="card card-tight" style={{ borderLeft: '4px solid #a89986' }}>
+      <div className="persona-header">
+        <div className="card-title" style={{ fontSize: 24, marginBottom: 0 }}>{name}</div>
+        <div className="persona-share">{share}</div>
+      </div>
+      <div className="persona-meta">{profile}</div>
+      <div className="persona-cadence">{cadence}</div>
+      <div className="persona-spend">{spend}</div>
+      <div className="mini-label" style={{ marginBottom: 6 }}>business value</div><div className="persona-value">{value}</div>
+    </div>
+  );
+}
+
+function BeliefCard({ confidence, title, summary, details }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="card card-tight expando" onClick={() => setOpen(!open)}>
+      <div className="expando-header">
+        <div>
+          <div className="card-title" style={{ fontSize: 30, marginBottom: 6 }}>{title}</div>
+          <div className="card-copy">{summary}</div>
+        </div>
+        <span className={`badge ${confidence}`}>{open ? "less" : confidence}</span>
+      </div>
+      {open && <div className="expando-copy"><Bul items={details} /></div>}
+    </div>
+  );
+}
+
+function RiskCard({ tone, title, copy }) {
+  return (
+    <div className={`card card-tight risk-card risk-${tone}`}>
+      <div className="eyebrow">{tone === "green" ? "strongest signal" : tone === "amber" ? "watch closely" : "critical discipline"}</div>
+      <div className="card-title" style={{ fontSize: 28 }}>{title}</div>
+      <div className="card-copy">{copy}</div>
+    </div>
+  );
+}
+
+function Accordion({ title, summary, children, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="accordion">
+      <button onClick={() => setOpen(!open)}>
+        <div>
+          <div className="accordion-title">{title}</div>
+          {!open && summary && <div className="accordion-summary">{summary}</div>}
+        </div>
+        <span className={`badge ${open ? "medium" : "high"}`}>{open ? "close" : "open"}</span>
+      </button>
+      {open && <div className="accordion-body">{children}</div>}
+    </div>
+  );
+}
+
+function Modal({ open, onClose, children }) {
+  if (!open) return null;
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal-panel" onClick={(e) => e.stopPropagation()}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [scenario, setScenario] = useState("base");
+  const [model, setModel] = useState("club");
+  const [personaModel, setPersonaModel] = useState("club");
+  const [overrides, setOverrides] = useState({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTab, setModalTab] = useState("build");
+  const [matrixActive, setMatrixActive] = useState("bathhouse reserve");
+  const [costActive, setCostActive] = useState("construction");
+  const [beliefActive, setBeliefActive] = useState(null);
+  const [riskActive, setRiskActive] = useState(null);
+
+  const isClub = model === "club";
+
+  const selectedBaseData = useMemo(
+    () => ({ ...SCENARIOS[scenario][isClub ? "club" : "large"], reserveMonths: isClub ? 3 : 4 }),
+    [scenario, model]
+  );
+  const otherBaseData = useMemo(
+    () => ({ ...SCENARIOS[scenario][isClub ? "large" : "club"], reserveMonths: isClub ? 4 : 3 }),
+    [scenario, model]
+  );
+
+  const selectedBalCost = useMemo(
+    () => computeBalancingCost(SCENARIOS[scenario][isClub ? "club" : "large"], isClub),
+    [scenario, model]
+  );
+  const otherBalCost = useMemo(
+    () => computeBalancingCost(SCENARIOS[scenario][isClub ? "large" : "club"], !isClub),
+    [scenario, model]
+  );
+
+  const d = { ...selectedBaseData, ...overrides };
+  const m = calc(d, isClub, selectedBalCost);
+  const mBase = calc(selectedBaseData, isClub, selectedBalCost);
+  const other = calc(otherBaseData, !isClub, otherBalCost);
+
+  const reserveCompareData = { ...SCENARIOS[scenario].club, reserveMonths: 3 };
+  const flagshipCompareData = { ...SCENARIOS[scenario].large, reserveMonths: 4 };
+  const reserveCompare = calc(reserveCompareData, true, computeBalancingCost(SCENARIOS[scenario].club, true));
+  const flagshipCompare = calc(flagshipCompareData, false, computeBalancingCost(SCENARIOS[scenario].large, false));
+
+  const hasOverrides = Object.keys(overrides).length > 0;
+  const setO = useCallback((key, value) => setOverrides((prev) => ({ ...prev, [key]: value })), []);
+  const reset = useCallback(() => setOverrides({}), []);
+
+  const switchModel = useCallback((next) => {
+    setModel(next);
+    setPersonaModel(next);
+    setOverrides({});
+    setMatrixActive(next === "club" ? "bathhouse reserve" : "bathhouse sf");
+    setModalTab("build");
+    setCostActive("construction");
+    setBeliefActive(null);
+    setRiskActive(null);
+  }, []);
+
+  const switchScenario = useCallback((next) => {
+    setScenario(next);
+    setOverrides({});
+  }, []);
+
+  const conservativeData = { ...SCENARIOS.conservative[isClub ? "club" : "large"], reserveMonths: isClub ? 3 : 4 };
+  const baseData = { ...SCENARIOS.base[isClub ? "club" : "large"], reserveMonths: isClub ? 3 : 4 };
+  const optimisticData = { ...SCENARIOS.optimistic[isClub ? "club" : "large"], reserveMonths: isClub ? 3 : 4 };
+
+  const cons = calc(conservativeData, isClub, computeBalancingCost(SCENARIOS.conservative[isClub ? "club" : "large"], isClub));
+  const baseCase = calc(baseData, isClub, computeBalancingCost(SCENARIOS.base[isClub ? "club" : "large"], isClub));
+  const opt = calc(optimisticData, isClub, computeBalancingCost(SCENARIOS.optimistic[isClub ? "club" : "large"], isClub));
+
+  const buildStress = calc({ ...d, buildoutPerSqFt: Math.round(d.buildoutPerSqFt * 1.15) }, isClub, selectedBalCost);
+  const delayStress = calc({ ...d, preOpenMonths: d.preOpenMonths + 4 }, isClub, selectedBalCost);
+  const reserveStress = calc({ ...d, reserveMonths: d.reserveMonths + 2 }, isClub, selectedBalCost);
+  const comboStress = calc({
+    ...d,
+    buildoutPerSqFt: Math.round(d.buildoutPerSqFt * 1.15),
+    preOpenMonths: d.preOpenMonths + 4,
+    reserveMonths: d.reserveMonths + 2,
+  }, isClub, selectedBalCost);
+
+  const breakdown = [
+    {
+      label: "construction",
+      value: m.buildout,
+      color: COLORS.build,
+      copy: `${fmt(d.buildoutPerSqFt)}/sf across ${whole(d.sqFt)} sf drives the base build budget.`,
+      bullets: [
+        isClub ? "for reserve, the risk is paying premium club-level finish cost without gaining enough experiential depth." : "for the flagship, this is where wet-work coordination and shell condition start to matter materially.",
+        `a +15% build-cost move adds ${deltaFmt(buildStress.totalCapital - m.totalCapital)} to setup cost.`,
+      ],
+    },
+    ...(isClub ? [] : [{
+      label: "wet systems",
+      value: m.mechanical,
+      color: COLORS.mechanical,
+      copy: "pools, hvac, steam, drainage, and heavy mechanical are the distinctive cost center for the flagship format.",
+      bullets: [
+        "this line is what makes shell selection especially important on the flagship path.",
+        "bad venting, drainage, or loading assumptions can move this number quickly.",
+      ],
+    }]),
+    {
+      label: isClub ? "member fitout" : "ff&e",
+      value: m.ffe,
+      color: COLORS.ffe,
+      copy: isClub ? "lounge, treatment, changing, and hospitality finish have to make a small club feel complete." : "furniture, fixtures, and guest-facing equipment support the social and hospitality layer.",
+      bullets: [
+        isClub ? "reserve earns its premium partly through warmth, hospitality, and club feel." : "this line becomes more important when the concept is sold as a destination rather than a utility.",
+      ],
+    },
+    {
+      label: "pre-open carry",
+      value: m.preOpenRent + m.preOpenOther,
+      color: COLORS.preopen,
+      copy: `${fmtMonths(d.preOpenMonths)} of rent and launch carry before the venue opens.`,
+      bullets: [
+        `current pre-open rent is ${fmt(m.preOpenRent)} and launch carry is ${fmt(m.preOpenOther)}.`,
+        `a +4 month delay adds ${deltaFmt(delayStress.totalCapital - m.totalCapital)} of extra setup cost.`,
+      ],
+    },
+    {
+      label: "permits + fees",
+      value: m.permits,
+      color: COLORS.permits,
+      copy: "this covers permitting, professional fees, legal, and approvals that sit outside pure construction spend.",
+      bullets: [
+        "small does not mean permit-light once wet program, hospitality, and alcohol are layered together.",
+        "for the flagship, health and building coordination are a larger gating issue than the dollar line itself.",
+      ],
+    },
+    {
+      label: "reserve",
+      value: m.wcReserve,
+      color: COLORS.reserve,
+      copy: `${fmtMonths(d.reserveMonths)} of modeled monthly opex held as opening buffer.`,
+      bullets: [
+        `current reserve is sized off ${fmt(m.monthlyOpex)} of monthly opex.`,
+        `adding 2 reserve months increases setup cost by ${deltaFmt(reserveStress.totalCapital - m.totalCapital)}.`,
+      ],
+    },
+  ].filter((item) => item.value > 0);
+
+  const costDetail = breakdown.find((item) => item.label === costActive) || breakdown[0];
+
+  const topContent = isClub
+    ? {
+        pageTitle: "could bathhouse reserve work in sf?",
+        lede: "the decision is whether a tighter, member-led reserve can open on a smaller check and become part of weekly social life for the right sf circle.",
+        thesis: "smaller check. sharper audience. the real diligence sits in site discipline, opening path, and whether the club feels socially sticky enough to justify premium dues.",
+        metricLabel: "modeled phase 1 setup cost · click for what you need to believe",
+        metricSub: `open the assumptions, sf-specific gating items, and kill tests behind this ${fmt(m.totalCapital)} phase 1 check.`,
+        mixLabel: "phase 1 setup cost mix",
+        controlTitle: "stress the phase 1 check before debating upside.",
+        controlCopy: "for reserve, the key variables are member density, build quality, and how much reserve is needed to open without pressure.",
       }
-    </div>
+    : {
+        pageTitle: "could the flagship work in sf?",
+        lede: "the decision is whether a flagship bathhouse in sf can open inside a disciplined capital band and still feel socially magnetic enough to become a repeat habit.",
+        thesis: "promising concept. the real diligence sits in build discipline and the opening path, not in whether the product category makes sense.",
+        metricLabel: "modeled total setup cost · click for what you need to believe",
+        metricSub: "open the assumptions, sf-specific gating items, and kill tests behind this number.",
+        mixLabel: "setup cost mix",
+        controlTitle: "move the assumptions that change the check size first.",
+        controlCopy: "use the sliders to stress the check size, reserve requirement, and opening band before moving into operating math.",
+      };
 
-    <div style={{display:"flex",gap:10,marginBottom:44,flexWrap:"wrap"}}>
-      <Callout label="total capital required" value={isClub?fmt(m.totalCapital)+" - "+fmt(m.totalCapital+m.p2Cap):fmt(m.totalCapital)} sub={isClub?"phase 1: "+fmt(m.totalCapital)+" / phase 2: "+fmt(m.p2Cap):fmt(m.buildout)+" buildout + "+fmt(m.totalCapital-m.buildout)+" soft costs"}/>
-      <Callout label="monthly breakeven revenue" value={fmt(m.monthlyBE)} sub={"reached by month "+m.breakEvenMonth}/>
-      <Callout label="addressable member pool" value={isClub?"12-18k":"45-65k"} sub={isClub?"sf households with $5m+ net worth":"sf adults hhi $150k+, wellness-oriented"}/>
-    </div>
+  const fitCards = isClub
+    ? [
+        {
+          title: "network access is not the problem",
+          copy: "the case is less about finding members than about giving the right circle a place that feels materially better than a dinner rotation or a legacy club locker room.",
+        },
+        {
+          title: "reserve competes for premium time, not only wellness spend",
+          copy: "the better comp set is the battery, bay club, and equinox: places already in the weekly budget and identity stack of affluent sf members.",
+        },
+        {
+          title: "small can work if it feels complete",
+          copy: "the reserve format only clears if an intimate footprint still feels like a destination and not like a partial prelude to the real thing.",
+        },
+        {
+          title: "club quality matters as much as thermal quality",
+          copy: "for reserve, hospitality, food and beverage, and programming carry more weight because they are what turn a wellness venue into a social ritual.",
+        },
+      ]
+    : [
+        {
+          title: "the category already makes sense",
+          copy: "the question is not whether premium thermal wellness can work. the question is whether sf can support a flagship version without letting capex and pre-open carry sprawl.",
+        },
+        {
+          title: "sf has clubs and wellness, but not the hybrid",
+          copy: "the whitespace is the overlap: serious thermal product, strong food and beverage, and a setting people actually use socially.",
+        },
+        {
+          title: "the concept works only if it becomes a ritual",
+          copy: "a strong sf case depends on repeat local use with friends, not only destination spa visits. the format has to become part of weekly social life.",
+        },
+        {
+          title: "delivery risk matters more than demand rhetoric",
+          copy: "the core investment question is whether site condition, wet-work complexity, and pre-opening carry stay inside the band shown above.",
+        },
+      ];
 
-    <h2 style={{fontSize:17,fontFamily:SER,fontWeight:400,color:"#3d3832",marginBottom:14}}>side-by-side comparison</h2>
-    <Tbl headers={["","bathhouse reserve","bathhouse sf"]} rows={[
-      ["total investment",fmt(isClub?m.totalCapital:mOther.totalCapital)+(isClub?" - "+fmt(m.totalCapital+m.p2Cap):""),fmt(isClub?mOther.totalCapital:m.totalCapital)],
-      ["annual revenue",fmt(isClub?m.totalRev:mOther.totalRev),fmt(isClub?mOther.totalRev:m.totalRev)],
-      ["ebitda margin",pct(isClub?m.ebitdaMargin:mOther.ebitdaMargin),pct(isClub?mOther.ebitdaMargin:m.ebitdaMargin)],
-      ["breakeven","month "+(isClub?m.breakEvenMonth:mOther.breakEvenMonth),"month "+(isClub?mOther.breakEvenMonth:m.breakEvenMonth)],
-      ["member target",String(isClub?m.memberCount:mOther.memberCount),String(isClub?mOther.memberCount:m.memberCount)],
-      ["capital risk","lower, phased","higher, single bet"],
-      ["ramp risk","moderate, referral-driven","high, needs fast volume"],
-      ["exit optionality","brand extension, multi-city","single-asset, operator sale"],
-    ]}/>
+  const translationCards = isClub
+    ? [
+        {
+          eyebrow: "what carries over",
+          items: [
+            "thermal ritual remains the anchor product",
+            "treatments still expand spend and dwell time",
+            "food and beverage still matters because members bring friends",
+            "the best version feels like a third place, not a spa package",
+          ],
+        },
+        {
+          eyebrow: "what narrows",
+          items: [
+            "the footprint is smaller, so every room has to earn its place",
+            "the model relies more on members and less on public traffic",
+            "club programming becomes part of the product, not an add-on",
+            "shell quality matters because there is less room to hide a compromise",
+          ],
+        },
+        {
+          eyebrow: "what must be earned",
+          items: [
+            "intimacy that feels exclusive rather than undersized",
+            "service and f&b good enough to compete with existing member habits",
+            "weekly usage with guests, not only solo recovery visits",
+            "a permit path clean enough that phase 1 remains a disciplined first bet",
+          ],
+        },
+      ]
+    : [
+        {
+          eyebrow: "what carries over",
+          items: [
+            "thermal circuit as the anchor product",
+            "treatments as spend expansion",
+            "food and beverage as dwell-time driver",
+            "group visits and repeat ritual instead of single-service usage",
+          ],
+        },
+        {
+          eyebrow: "what changes in sf",
+          items: [
+            "site selection matters more because shell condition drives capex",
+            "more contingency belongs in the first conversation",
+            "arrival sequence and neighborhood choice matter more than in nyc",
+            "timeline discipline is part of the thesis, not an execution footnote",
+          ],
+        },
+        {
+          eyebrow: "what must be earned",
+          items: [
+            "design quality that supports a price premium",
+            "hospitality that feels like a place, not a treatment factory",
+            "evening energy without leaning on nightclub behavior",
+            "a permit path credible enough to commit real capital against",
+          ],
+        },
+      ];
 
-    <h2 style={{fontSize:17,fontFamily:SER,fontWeight:400,color:"#3d3832",margin:"40px 0 12px"}}>what needs to be true</h2>
-    <Bul items={isClub?[
-      "sf's uhnw community (12-18k households) has unmet demand for an intimate, wellness-forward social club that the battery and pacific-union don't fill",
-      "200+ founding members secured pre-launch through personal networks at "+fmt(d.initiationFee)+" initiation + "+fmt(d.monthlyDues)+"/mo dues",
-      "a "+num(d.sqFt)+" sq ft phase 1 space delivers a premium enough experience to command luxury pricing and build a waitlist for phase 2",
-      "sf permitting for a wet facility in jackson square or pac heights is achievable within 10-12 months",
-      "f&b and programming (cigar evenings, wine dinners, speaker series) drive 1.0-1.2 visits per member per week, sustaining 90%+ annual retention",
-    ]:[
-      "sf can support 60-70% of bathhouse manhattan's visitor throughput from a population base 30% the size (3-4x per-capita penetration)",
-      "a hybrid model ("+num(d.memberCount)+" members + "+num(d.walkInVisitsMonth)+" walk-ins/mo) generates volume to cover $400-500k/mo opex",
-      "sf permitting for an "+num(d.sqFt)+" sq ft wet facility completes within 14-18 months",
-      "wellness-forward positioning differentiates enough from archimedes banya and kabuki springs to command 2-3x price premium",
-      "construction costs stay at or below $500-600/sq ft despite sf's prevailing wage and wet-facility complexity",
-    ]}/>
+  const matrixPoints = isClub
+    ? [
+        {
+          label: "bathhouse reserve",
+          x: 84,
+          y: 84,
+          color: COLORS.primary,
+          subtitle: "private wellness and social club",
+          price: `${fmt(d.monthlyDues)}/mo + ${fmt(d.initiationFee)}`,
+          scores: [
+            { label: "wellness", value: 4, color: COLORS.build },
+            { label: "social", value: 5, color: COLORS.build },
+            { label: "exclusivity", value: 5, color: COLORS.build },
+          ],
+          notes: [
+            "best read as a high-end club with a wellness core, not as a public bathhouse.",
+            "the premium has to clear against member habits already served by the battery, bay club, and equinox.",
+            "the win condition is a tight circle using it weekly with guests.",
+          ],
+        },
+        {
+          label: "the battery",
+          x: 30,
+          y: 88,
+          color: "#b19f89",
+          subtitle: "established social club benchmark",
+          price: "$500/mo + initiation",
+          scores: [
+            { label: "wellness", value: 1, color: "#b19f89" },
+            { label: "social", value: 5, color: "#b19f89" },
+            { label: "exclusivity", value: 5, color: "#b19f89" },
+          ],
+          notes: [
+            "important because it already owns premium social belonging for a similar sf audience.",
+            "reserve needs to feel warmer, more intimate, and more wellness-native rather than simply adjacent.",
+          ],
+        },
+        {
+          label: "bay club",
+          x: 42,
+          y: 54,
+          color: "#c3b4a0",
+          subtitle: "premium lifestyle and family-club benchmark",
+          price: "$200-350/mo",
+          scores: [
+            { label: "wellness", value: 2, color: "#c3b4a0" },
+            { label: "social", value: 3, color: "#c3b4a0" },
+            { label: "exclusivity", value: 2, color: "#c3b4a0" },
+          ],
+          notes: [
+            "relevant because it captures recurring budget and routine even though the brand energy is broader and more mainstream.",
+            "reserve should feel much more curated and intimate.",
+          ],
+        },
+        {
+          label: "equinox",
+          x: 38,
+          y: 42,
+          color: "#ad9c87",
+          subtitle: "premium fitness habit benchmark",
+          price: "$260-350/mo",
+          scores: [
+            { label: "wellness", value: 2, color: "#ad9c87" },
+            { label: "social", value: 2, color: "#ad9c87" },
+            { label: "exclusivity", value: 2, color: "#ad9c87" },
+          ],
+          notes: [
+            "useful because it shows how much affluent members already pay for recurring self-optimization.",
+            "reserve has to feel like a different category rather than a nicer locker room.",
+          ],
+        },
+        {
+          label: "sweathouz",
+          x: 50,
+          y: 18,
+          color: "#d5cab9",
+          subtitle: "contrast-therapy and recovery benchmark",
+          price: "$149-249/mo",
+          scores: [
+            { label: "wellness", value: 3, color: "#d5cab9" },
+            { label: "social", value: 1, color: "#d5cab9" },
+            { label: "exclusivity", value: 1, color: "#d5cab9" },
+          ],
+          notes: [
+            "useful mainly as a lower-end wellness benchmark, not as the right aspiration comp.",
+            "reserve should sit far above it on social quality and exclusivity.",
+          ],
+        },
+      ]
+    : [
+        {
+          label: "bathhouse sf",
+          x: 86,
+          y: 80,
+          color: COLORS.primary,
+          subtitle: "full-format thermal and social destination",
+          price: `${fmt(d.monthlyDues)}/mo + walk-in blend`,
+          scores: [
+            { label: "thermal depth", value: 5, color: COLORS.build },
+            { label: "social energy", value: 4, color: COLORS.build },
+            { label: "premium signal", value: 4, color: COLORS.build },
+          ],
+          notes: [
+            "the flagship case tries to own both thermal depth and social energy at once.",
+            "the model only works if the product feels like a destination rather than a utilitarian recovery box.",
+          ],
+        },
+        {
+          label: "the battery",
+          x: 20,
+          y: 84,
+          color: "#b19f89",
+          subtitle: "social club benchmark",
+          price: "$500/mo + initiation",
+          scores: [
+            { label: "thermal depth", value: 1, color: "#b19f89" },
+            { label: "social energy", value: 5, color: "#b19f89" },
+            { label: "premium signal", value: 5, color: "#b19f89" },
+          ],
+          notes: [
+            "shows that the audience pays for social belonging, but not that it pays for full thermal depth.",
+          ],
+        },
+        {
+          label: "kabuki",
+          x: 68,
+          y: 24,
+          color: "#958673",
+          subtitle: "traditional urban bathhouse benchmark",
+          price: "$35-50/visit",
+          scores: [
+            { label: "thermal depth", value: 4, color: "#958673" },
+            { label: "social energy", value: 1, color: "#958673" },
+            { label: "premium signal", value: 2, color: "#958673" },
+          ],
+          notes: [
+            "useful for the flagship because it proves baseline bathhouse demand, but it does not prove destination-level premium social positioning.",
+          ],
+        },
+        {
+          label: "archimedes",
+          x: 82,
+          y: 42,
+          color: "#8c7d6d",
+          subtitle: "large-format thermal benchmark",
+          price: "$45-55/visit",
+          scores: [
+            { label: "thermal depth", value: 5, color: "#8c7d6d" },
+            { label: "social energy", value: 2, color: "#8c7d6d" },
+            { label: "premium signal", value: 2, color: "#8c7d6d" },
+          ],
+          notes: [
+            "useful for program depth and throughput, but not the right emotional benchmark for a premium flagship.",
+          ],
+        },
+        {
+          label: "sweathouz",
+          x: 34,
+          y: 16,
+          color: "#cbbdad",
+          subtitle: "recovery-box benchmark",
+          price: "$149-249/mo",
+          scores: [
+            { label: "thermal depth", value: 2, color: "#cbbdad" },
+            { label: "social energy", value: 1, color: "#cbbdad" },
+            { label: "premium signal", value: 1, color: "#cbbdad" },
+          ],
+          notes: [
+            "a reminder that the downside version of the concept is to drift into a nicer recovery box.",
+          ],
+        },
+      ];
 
-    <div style={{margin:"40px 0",background:"rgba(139,126,106,0.04)",padding:"24px 20px",borderRadius:2}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-        <h2 style={{fontSize:15,fontFamily:SER,fontWeight:400,color:"#3d3832",margin:0}}>adjust key assumptions</h2>
-        {hasOverrides&&<button onClick={reset} style={{fontSize:11,color:"#8b7e6a",background:"none",border:"1px solid #ddd5c8",padding:"4px 12px",cursor:"pointer",borderRadius:2}}>reset to {scenario}</button>}
-      </div>
-      <div style={{fontSize:12,color:"#9a8f82",marginBottom:20}}>drag any slider to see how it affects the four outputs on the right. all top-level numbers update live.</div>
-      <div style={{display:"flex",gap:32,flexWrap:"wrap"}}>
-        <div style={{flex:1.2,minWidth:240}}>
-          {isClub?<>
-            <Slider label="initiation fee" value={d.initiationFee} min={10000} max={75000} step={5000} format={fmt} onChange={v=>setO("initiationFee",v)}/>
-            <Slider label="monthly dues" value={d.monthlyDues} min={500} max={3000} step={100} format={fmt} onChange={v=>setO("monthlyDues",v)}/>
-            <Slider label="member count" value={d.memberCount} min={100} max={500} step={25} onChange={v=>setO("memberCount",v)}/>
-          </>:<>
-            <Slider label="monthly dues" value={d.monthlyDues} min={99} max={400} step={25} format={fmt} onChange={v=>setO("monthlyDues",v)}/>
-            <Slider label="member count" value={d.memberCount} min={400} max={1500} step={50} onChange={v=>setO("memberCount",v)}/>
-            <Slider label="walk-in visits / month" value={d.walkInVisitsMonth||0} min={500} max={5000} step={250} format={num} onChange={v=>setO("walkInVisitsMonth",v)}/>
-          </>}
-          <Slider label="buildout cost / sq ft" value={d.buildoutPerSqFt} min={300} max={800} step={25} format={fmt} onChange={v=>setO("buildoutPerSqFt",v)}/>
-          <Slider label="lease rate / sq ft" value={d.leasePerSqFt} min={40} max={120} step={5} format={fmt} onChange={v=>setO("leasePerSqFt",v)}/>
+  const matrixDetail = matrixPoints.find((point) => point.label === matrixActive) || matrixPoints[0];
+
+  const neighborhoods = isClub
+    ? [
+        {
+          name: "jackson square",
+          subtitle: "best emotional fit for a smaller, invitation-forward reserve if the shell already feels special.",
+          scores: [
+            { label: "brand fit", value: 9, color: COLORS.green },
+            { label: "site availability", value: 4, color: COLORS.red },
+            { label: "execution ease", value: 5, color: COLORS.amber },
+          ],
+          notes: [
+            "best for signaling intimacy, discretion, and old-money polish.",
+            "the constraint is not demand. it is whether a wet-use shell can be found without a heroic retrofit.",
+          ],
+        },
+        {
+          name: "pacific heights / fillmore",
+          subtitle: "strong residential luxury signal with an audience likely to use reserve as part of weekly life.",
+          scores: [
+            { label: "brand fit", value: 8, color: COLORS.green },
+            { label: "site availability", value: 6, color: COLORS.amber },
+            { label: "execution ease", value: 6, color: COLORS.amber },
+          ],
+          notes: [
+            "best if the club wants to feel embedded in daily life rather than destination-only.",
+            "works well when the product leans more intimate and member-led than grand public arrival.",
+          ],
+        },
+        {
+          name: "north beach / russian hill edge",
+          subtitle: "interesting if the ambition is personality and evening energy, but the shell has to be unusually good.",
+          scores: [
+            { label: "brand fit", value: 7, color: COLORS.amber },
+            { label: "site availability", value: 5, color: COLORS.amber },
+            { label: "execution ease", value: 5, color: COLORS.amber },
+          ],
+          notes: [
+            "better for a more social reserve tone than for a pure quiet-membership read.",
+            "needs careful design to feel elegant rather than nightlife-adjacent.",
+          ],
+        },
+      ]
+    : [
+        {
+          name: "mission bay / dogpatch",
+          subtitle: "most realistic path to a large-format shell without compromising the full program.",
+          scores: [
+            { label: "brand fit", value: 7, color: COLORS.amber },
+            { label: "site availability", value: 9, color: COLORS.green },
+            { label: "execution ease", value: 7, color: COLORS.green },
+          ],
+          notes: [
+            "best chance at a box large enough for full thermal, treatment, and food and beverage.",
+            "needs strong placemaking so the experience feels like a destination, not a warehouse with saunas.",
+          ],
+        },
+        {
+          name: "jackson square",
+          subtitle: "best brand signal, but materially harder to execute at real bathhouse sf scale.",
+          scores: [
+            { label: "brand fit", value: 9, color: COLORS.green },
+            { label: "site availability", value: 4, color: COLORS.red },
+            { label: "execution ease", value: 5, color: COLORS.amber },
+          ],
+          notes: [
+            "the right emotional fit for an investor-grade flagship if the real estate itself feels special.",
+            "large contiguous space is materially harder to find.",
+          ],
+        },
+        {
+          name: "soma edge",
+          subtitle: "can work for scale, but the surrounding context has to disappear once the guest enters.",
+          scores: [
+            { label: "brand fit", value: 6, color: COLORS.amber },
+            { label: "site availability", value: 8, color: COLORS.green },
+            { label: "execution ease", value: 6, color: COLORS.amber },
+          ],
+          notes: [
+            "floor plates and back-of-house logistics are more realistic.",
+            "good for scale; weaker for an immediately obvious luxury signal.",
+          ],
+        },
+      ];
+
+  const beliefs = isClub
+    ? [
+        {
+          confidence: "high",
+          title: "member density forms quickly",
+          summary: "the investor network can get people in the room. the harder question is whether members use it often enough to make the club feel socially alive.",
+          evidence: "for reserve, dead air is more damaging than low average spend. the first win condition is a room that already feels socially full.",
+          risk: "if early members behave like occasional spa users rather than weekly hosts, the club can feel expensive before it feels magnetic.",
+          mitigant: "shape the first cohort around guest behavior, supper cadence, and repeat rituals rather than headline member count alone.",
+        },
+        {
+          confidence: "medium",
+          title: "the small footprint still feels complete",
+          summary: "reserve only works if intimacy reads as scarcity and polish, not as missing program.",
+          evidence: "a smaller club can still clear if each room carries social and emotional weight, and if hospitality fills the gaps created by footprint.",
+          risk: "undersized thermal, treatment, or lounge capacity can make reserve feel like a teaser for phase 2 instead of a finished product.",
+          mitigant: "design phase 1 to feel whole on day one and manage peak density through reservation discipline rather than over-programming the footprint.",
+        },
+        {
+          confidence: "medium",
+          title: "the shell stays disciplined",
+          summary: "a small club can still get wrecked by wet-work surprises. shell quality remains one of the first underwriting questions.",
+          evidence: `current modeled phase 1 setup cost is ${fmt(m.totalCapital)} at ${fmt(m.capexPerSqFt)}/sf.`,
+          risk: `a +15% build-cost shock adds ${deltaFmt(buildStress.totalCapital - m.totalCapital)} before any demand upside is earned.`,
+          mitigant: "stay site-first, not mood-board-first. shell condition should clear before detailed design ambition expands.",
+        },
+        {
+          confidence: "low",
+          title: "premium dues clear against existing habits",
+          summary: "reserve is asking members to add another premium line item next to the battery, equinox, travel, and social dining.",
+          evidence: "the strongest reserve comps are premium habit and belonging products, not low-end bathhouses.",
+          risk: "if the club feels too similar to existing habits, dues can read as additive but not necessary.",
+          mitigant: "use programming, hosting, and ritual to make reserve feel like a different line item from fitness or occasional spa spend.",
+        },
+      ]
+    : [
+        {
+          confidence: "high",
+          title: "it becomes a third-place ritual",
+          summary: "the concept works when people use it with friends and frequency, not as quarterly self-care.",
+          evidence: "food and beverage and dwell time matter because they turn a thermal visit into a social pattern rather than a one-off treatment occasion.",
+          risk: "if usage stays purely functional, the concept can still be liked without ever becoming economically strong.",
+          mitigant: "underwrite toward repeat social use and design enough programming, seating, and hospitality to support longer stays.",
+        },
+        {
+          confidence: "medium",
+          title: "a credible shell exists",
+          summary: "the shell condition may matter more than the brand deck. wet work can erase elegance very quickly.",
+          evidence: "existing utility pathways, venting, drainage, and loading are worth real money before design even starts.",
+          risk: `at the current settings, every extra 1 month of pre-open carry is roughly ${fmt((m.preOpenRent + 80000) / d.preOpenMonths)} of additional capital.`,
+          mitigant: "treat shell selection as the first investment decision and avoid forcing the concept into a romantic but compromised building.",
+        },
+        {
+          confidence: "medium",
+          title: "the premium clears because the experience feels complete",
+          summary: "thermal alone will not justify the price. the premium has to be earned through design, service, and atmosphere.",
+          evidence: "food and beverage and treatment quality carry as much signaling value as the pools themselves.",
+          risk: "if the venue feels like a nicer spa box rather than a destination with social gravity, pricing power erodes.",
+          mitigant: "keep the product standard high across thermal, service, and hospitality rather than relying on one hero feature.",
+        },
+        {
+          confidence: "low",
+          title: "capex and timeline stay inside the band",
+          summary: "this is the central underwriting discipline. it is the main thing that can break the case even if the concept resonates.",
+          evidence: `current modeled setup cost is ${fmt(m.totalCapital)} at ${fmt(m.capexPerSqFt)}/sf.`,
+          risk: `a +4 month delay adds ${deltaFmt(delayStress.totalCapital - m.totalCapital)} and a +15% build-cost move adds ${deltaFmt(buildStress.totalCapital - m.totalCapital)}.`,
+          mitigant: "set the budget with shell and permitting reality first, then decide how much design ambition still fits inside it.",
+        },
+      ];
+
+  const detailedRisks = isClub
+    ? [
+        {
+          title: "permitting delays",
+          probability: "high",
+          impact: "high",
+          color: COLORS.red,
+          summary: "reserve still carries real permitting complexity once wet program, hospitality, and alcohol are involved.",
+          why: "time slippage expands pre-open rent burn and delays member activation.",
+          mitigant: "target shells with better plumbing inheritance, engage expediters early, and keep the bar path moving in parallel.",
+          nextStep: "pressure-test one short-list shell with permit counsel before design spend expands.",
+        },
+        {
+          title: "member behavior is too light",
+          probability: "medium",
+          impact: "high",
+          color: COLORS.red,
+          summary: "the club only works if members use it frequently enough to make it feel socially alive.",
+          why: "reserve is more vulnerable to dead air than to modest misses in average spend.",
+          mitigant: "shape the first cohort around hosts, regulars, and couples rather than passive status members.",
+          nextStep: "map founding members by expected cadence and guest behavior, not only by wealth or status.",
+        },
+        {
+          title: "club quality misses the standard",
+          probability: "medium",
+          impact: "high",
+          color: COLORS.amber,
+          summary: "the social and hospitality layer has to clear against the battery, bay club, and premium restaurant habits.",
+          why: "reserve is not just underwriting thermal product; it is underwriting belonging.",
+          mitigant: "treat f&b, hosting, service, and programming as core product rather than support functions.",
+          nextStep: "define the daypart program and service standard before finalizing layout.",
+        },
+        {
+          title: "phase 1 feels too small",
+          probability: "medium",
+          impact: "medium",
+          color: COLORS.amber,
+          summary: "reserve can be both capital-light and still too small to feel complete.",
+          why: "undersized footprint weakens retention and guest behavior.",
+          mitigant: "curate peak density, design for emotional completeness, and protect the lounge and hosting functions.",
+          nextStep: "test one sample plan against thursday evening and saturday morning peak use.",
+        },
+        {
+          title: "cigar scrutiny or ventilation drag",
+          probability: "low-med",
+          impact: "medium",
+          color: COLORS.amber,
+          summary: "the cigar element is additive, but it creates a real regulatory and mechanical burden.",
+          why: "if badly structured, it can complicate design, staffing, and optics.",
+          mitigant: "keep it owner-operated, separated, and mechanically distinct from the rest of the club.",
+          nextStep: "get counsel on the exact operating structure before pitching it as a permanent feature.",
+        },
+      ]
+    : [
+        {
+          title: "permitting timeline slips",
+          probability: "high",
+          impact: "critical",
+          color: COLORS.red,
+          summary: "the flagship is most exposed to delay because pre-open rent and carry are meaningful at this scale.",
+          why: "every month of delay compounds both capital and opening risk.",
+          mitigant: "budget toward the longer end, use expediters, and treat health/building coordination as a first-order diligence item.",
+          nextStep: "get address-specific timeline assumptions before finalizing the capital band.",
+        },
+        {
+          title: "shell quality is worse than it looks",
+          probability: "medium",
+          impact: "high",
+          color: COLORS.red,
+          summary: "a compromised shell can blow up wet-work cost even if the neighborhood and story look right.",
+          why: "mechanical, drainage, venting, and utility capacity matter more than romance.",
+          mitigant: "screen shells for wet-work feasibility before spending time on design vision.",
+          nextStep: "create a hard shell checklist and walk every candidate through it.",
+        },
+        {
+          title: "ramp cash burn is heavier than expected",
+          probability: "high",
+          impact: "critical",
+          color: COLORS.red,
+          summary: "the flagship can still work long term and yet be painful during the opening valley.",
+          why: "the asset needs enough runway to survive to habit formation.",
+          mitigant: "size reserve honestly and keep opening-phase working capital separate from static build budget.",
+          nextStep: "build a monthly ramp curve and isolate the trough cash need explicitly.",
+        },
+        {
+          title: "capex drifts during build",
+          probability: "medium",
+          impact: "high",
+          color: COLORS.amber,
+          summary: "the flagship has more opportunity for both beauty and cost sprawl.",
+          why: "added complexity often hides inside finish, mechanical coordination, and timeline slippage.",
+          mitigant: "lock the core thermal and hospitality program first and defer non-essential ambition.",
+          nextStep: "separate mission-critical scope from nice-to-have scope before bid rounds.",
+        },
+        {
+          title: "per-capita demand is lighter than hoped",
+          probability: "medium",
+          impact: "medium",
+          color: COLORS.amber,
+          summary: "the category case may still be right even if the first sf flagship ramps slower than modeled.",
+          why: "sf has less density than manhattan, so frequency matters.",
+          mitigant: "keep the product broad enough to capture both member and walk-in occasions.",
+          nextStep: "validate frequency and daypart assumptions against comparable local habits, not only aspiration.",
+        },
+      ];
+
+  const personas = {
+    club: [
+      {
+        name: "nina",
+        share: "25%",
+        profile: "founder, post-exit / 32, sold saas co for $40m",
+        cadence: "4x/week, mornings + fri evening",
+        spend: "$2-3k/mo",
+        value: "high-frequency core member. stabilizes daytime utilization and acts as a strong referral source for founder and operator circles.",
+      },
+      {
+        name: "tom + priya",
+        share: "30%",
+        profile: "the couple / 30 and 31, growth equity principal + stripe product lead, combined $1.6m tc",
+        cadence: "fri dinner, sat morning soak",
+        spend: "$3-4k/mo as a pair",
+        value: "couple-led social node. drives paired usage, dinner occasions, and multi-couple referrals that make the room feel socially dense quickly.",
+      },
+      {
+        name: "marcus",
+        share: "25%",
+        profile: "senior eng, public tech / 28, staff eng at meta, $1.1m tc",
+        cadence: "thu-sat after 7pm",
+        spend: "$1.5-2k/mo",
+        value: "evening ritual user. helps fill late-day demand, strengthens bar spend, and brings in high-value peer referrals from tech networks.",
+      },
+      {
+        name: "kira",
+        share: "20%",
+        profile: "pe director / 35, healthcare pe, $1.2m tc",
+        cadence: "sat full wellness day, occasional weeknight",
+        spend: "$2-2.5k/mo",
+        value: "premium treatment-led member. supports spend depth, validates the service standard, and anchors weekend full-day usage.",
+      },
+    ],
+    large: [
+      {
+        name: "jess",
+        share: "35%",
+        profile: "walk-in to member convert / 28, product designer at figma, $195k",
+        cadence: "tue, thu after work",
+        spend: "$350-450/mo",
+        value: "conversion engine from walk-in to member. adds organic referral volume and social proof without relying only on paid acquisition.",
+      },
+      {
+        name: "omar + leah",
+        share: "25%",
+        profile: "the couple / 27 and 28, eng at coinbase ($240k) + brand at dtc startup ($130k)",
+        cadence: "every sat morning, every other fri evening",
+        spend: "$600-800/mo as a pair",
+        value: "weekend couple habit. useful for recurring peak demand and for bringing additional couples into the format.",
+      },
+      {
+        name: "kai",
+        share: "20%",
+        profile: "the loyal walk-in / 31, runs a creative studio, $160k",
+        cadence: "3-4x/month saturdays, always with a different friend",
+        spend: "$300-400/mo (walk-in)",
+        value: "valuable non-member evangelist. supports walk-in revenue, introduces new users, and lowers the cost of discovery.",
+      },
+      {
+        name: "rachel",
+        share: "20%",
+        profile: "the recovery convert / 33, senior manager at deloitte, $210k",
+        cadence: "mon, wed, fri mornings before work",
+        spend: "$225/mo (membership only)",
+        value: "routine-led weekday member. supports off-peak consistency and helps prove the flagship can become a repeat habit, not just a destination visit.",
+      },
+    ],
+  };
+
+  const sliderDefs = isClub
+    ? [
+        { label: "initiation fee", value: d.initiationFee, min: 10000, max: 75000, step: 5000, format: fmt, key: "initiationFee" },
+        { label: "monthly dues", value: d.monthlyDues, min: 800, max: 3000, step: 100, format: fmt, key: "monthlyDues" },
+        { label: "member count", value: d.memberCount, min: 120, max: 450, step: 10, format: whole, key: "memberCount" },
+        { label: "square footage", value: d.sqFt, min: 2500, max: 5000, step: 100, format: (v) => `${whole(v)} sf`, key: "sqFt" },
+        { label: "buildout cost / sq ft", value: d.buildoutPerSqFt, min: 325, max: 750, step: 25, format: fmt, key: "buildoutPerSqFt" },
+        { label: "lease rate / sq ft", value: d.leasePerSqFt, min: 50, max: 95, step: 5, format: fmt, key: "leasePerSqFt" },
+        { label: "pre-opening months", value: d.preOpenMonths, min: 8, max: 16, step: 1, format: fmtMonths, key: "preOpenMonths" },
+        { label: "reserve months", value: d.reserveMonths, min: 2, max: 6, step: 0.5, format: fmtMonths, key: "reserveMonths" },
+      ]
+    : [
+        { label: "square footage", value: d.sqFt, min: 14000, max: 24000, step: 500, format: (v) => `${whole(v)} sf`, key: "sqFt" },
+        { label: "buildout cost / sq ft", value: d.buildoutPerSqFt, min: 350, max: 800, step: 25, format: fmt, key: "buildoutPerSqFt" },
+        { label: "lease rate / sq ft", value: d.leasePerSqFt, min: 45, max: 95, step: 5, format: fmt, key: "leasePerSqFt" },
+        { label: "pre-opening months", value: d.preOpenMonths, min: 10, max: 22, step: 1, format: fmtMonths, key: "preOpenMonths" },
+        { label: "reserve months", value: d.reserveMonths, min: 2, max: 8, step: 0.5, format: fmtMonths, key: "reserveMonths" },
+      ];
+
+  const capitalRows = [
+    ["construction", fmt(m.buildout), pct(m.buildout / m.totalCapital)],
+    ...(!isClub ? [["wet systems", fmt(m.mechanical), pct(m.mechanical / m.totalCapital)]] : []),
+    [isClub ? "member fitout" : "ff&e", fmt(m.ffe), pct(m.ffe / m.totalCapital)],
+    ["pre-open rent", fmt(m.preOpenRent), pct(m.preOpenRent / m.totalCapital)],
+    ["pre-open launch", fmt(m.preOpenOther), pct(m.preOpenOther / m.totalCapital)],
+    ["permits + fees", fmt(m.permits), pct(m.permits / m.totalCapital)],
+    ["working capital reserve", fmt(m.wcReserve), pct(m.wcReserve / m.totalCapital)],
+    [isClub ? "phase 1 setup cost" : "total setup cost", fmt(m.totalCapital), "100%"],
+  ];
+
+  const scenarioRows = [
+    ["setup cost", fmt(cons.totalCapital), fmt(baseCase.totalCapital), fmt(opt.totalCapital)],
+    ["capex / sq ft", fmt(cons.capexPerSqFt), fmt(baseCase.capexPerSqFt), fmt(opt.capexPerSqFt)],
+    ["annual revenue", fmt(cons.totalRev), fmt(baseCase.totalRev), fmt(opt.totalRev)],
+    ["profit", fmt(cons.profit), fmt(baseCase.profit), fmt(opt.profit)],
+    ["profit margin", pct(cons.profitMargin), pct(baseCase.profitMargin), pct(opt.profitMargin)],
+    ["payback", fmtPayback(cons.paybackMonths), fmtPayback(baseCase.paybackMonths), fmtPayback(opt.paybackMonths)],
+  ];
+
+  const revenueRows = isClub
+    ? [
+        ["membership dues", fmt(m.membershipRev), pct(m.membershipRev / m.totalRev)],
+        ["initiation", fmt(m.initRevSteadyState), pct(m.initRevSteadyState / m.totalRev)],
+        ["food and beverage", fmt(m.fAndBRev), pct(m.fAndBRev / m.totalRev)],
+        ["treatments", fmt(m.treatmentRev), pct(m.treatmentRev / m.totalRev)],
+        ["total revenue", fmt(m.totalRev), "100%"],
+      ]
+    : [
+        ["membership dues", fmt(m.membershipRev), pct(m.membershipRev / m.totalRev)],
+        ["walk-in admissions", fmt(m.walkInRev), pct(m.walkInRev / m.totalRev)],
+        ["food and beverage", fmt(m.fAndBRev), pct(m.fAndBRev / m.totalRev)],
+        ["treatments", fmt(m.treatmentRev), pct(m.treatmentRev / m.totalRev)],
+        ["total revenue", fmt(m.totalRev), "100%"],
+      ];
+
+  const opexRows = [
+    ["rent", fmt(m.rent), pct(m.rent / m.totalRev)],
+    ["staff", fmt(m.staff), pct(m.staff / m.totalRev)],
+    ["utilities", fmt(d.utilityAnnual), pct(d.utilityAnnual / m.totalRev)],
+    ["cogs", fmt(m.cogs), pct(m.cogs / m.totalRev)],
+    ["other opex", fmt(m.balCost), pct(m.balCost / m.totalRev)],
+    ["profit", fmt(m.profit), pct(m.profitMargin)],
+  ];
+
+  const comparisonRows = [
+    ["setup cost", fmt(reserveCompare.totalCapital), fmt(flagshipCompare.totalCapital)],
+    ["optional expansion", fmt(reserveCompare.p2Cap), "n/a"],
+    ["member target", String(reserveCompare.memberCount), String(flagshipCompare.memberCount)],
+    ["annual revenue", fmt(reserveCompare.totalRev), fmt(flagshipCompare.totalRev)],
+    ["profit margin", pct(reserveCompare.profitMargin), pct(flagshipCompare.profitMargin)],
+    ["payback", fmtPayback(reserveCompare.paybackMonths), fmtPayback(flagshipCompare.paybackMonths)],
+  ];
+
+  const modalContent = {
+    build: isClub
+      ? [
+          {
+            title: "construction allowance",
+            body: `${fmt(d.buildoutPerSqFt)}/sf across ${whole(d.sqFt)} sf drives ${fmt(m.buildout)} of the current phase 1 check.`,
+            note: "this is the first line to pressure-test against actual shells.",
+          },
+          {
+            title: "member fitout",
+            body: `${fmt(m.ffe)} is held for changing rooms, lounge, treatment, and hospitality fitout.`,
+            note: "reserve lives or dies on whether a small footprint still feels complete.",
+          },
+          {
+            title: "fees and permits",
+            body: `${fmt(m.permits)} is reserved for permits and professional fees.`,
+            note: "small does not mean permit-light once water, mechanical, and hospitality are layered together.",
+          },
+          {
+            title: "reserve",
+            body: `${fmt(m.wcReserve)} equals ${fmtMonths(d.reserveMonths)} of modeled monthly opex.`,
+            note: "reserve should scale directly with the operating footprint rather than sit as a fixed placeholder.",
+          },
+        ]
+      : [
+          {
+            title: "construction allowance",
+            body: `${fmt(d.buildoutPerSqFt)}/sf across ${whole(d.sqFt)} sf drives ${fmt(m.buildout)} of the current check.`,
+            note: "this is the first line to pressure-test against actual shells.",
+          },
+          {
+            title: "wet systems",
+            body: `${fmt(m.mechanical)} is reserved for pools, steam, hvac, and related mep complexity.`,
+            note: "the real risk is not the line item itself; it is surprise scope created by the shell.",
+          },
+          {
+            title: "ff&e and fees",
+            body: `${fmt(m.ffe)} of ff&e plus ${fmt(m.permits)} of permits and professional fees are held outside core construction.`,
+            note: "these numbers feel small until design ambition starts to move.",
+          },
+          {
+            title: "reserve",
+            body: `${fmt(m.wcReserve)} equals ${fmtMonths(d.reserveMonths)} of modeled monthly opex.`,
+            note: "reserve should scale directly with the operating footprint rather than sit as a fixed placeholder.",
+          },
+        ],
+    timeline: [
+      {
+        title: "pre-opening clock",
+        body: `${fmtMonths(d.preOpenMonths)} is the current time-to-open assumption used for rent carry and launch burn.`,
+        note: "this should eventually reflect a real permit path for a real address.",
+      },
+      {
+        title: "rent carry",
+        body: `${fmt(m.preOpenRent)} burns before the first guest arrives.`,
+        note: "a slower permit path makes this line compound quietly but meaningfully.",
+      },
+      {
+        title: "launch burn",
+        body: `${fmt(m.preOpenOther)} covers pre-opening team, marketing, and operating setup.`,
+        note: "this line expands quietly if the opening path slips.",
+      },
+      {
+        title: "what helps",
+        body: isClub
+          ? "an intimate shell with clean utility paths, good access, and no heroic waterproofing problem."
+          : "an existing shell with cleaner utility paths, fewer structural surprises, and a landlord aligned on wet-use buildout.",
+        note: "the best underwriting improvement often comes from the real estate, not from the spreadsheet.",
+      },
+    ],
+    gating: isClub
+      ? [
+          {
+            title: "site quality",
+            body: "the shell has to support a premium club atmosphere without forcing too much space into back-of-house compromise.",
+            note: "reserve needs polish more than scale.",
+          },
+          {
+            title: "permit sequence",
+            body: "building, health, and wet-facility approvals still need to be scoped as one opening path.",
+            note: "small format does not remove sequencing risk.",
+          },
+          {
+            title: "member experience",
+            body: "the finished product must feel like a club worth dues, not a wellness studio with a nicer lounge.",
+            note: "this is where the comp set shifts toward the battery and away from low-end bathhouses.",
+          },
+          {
+            title: "programming density",
+            body: "members need enough reasons to return with people, not just enough reasons to recover alone.",
+            note: "ritual is the moat in reserve.",
+          },
+        ]
+      : [
+          {
+            title: "site quality",
+            body: "the shell has to support a high-end thermal program without forcing a heroic retrofit.",
+            note: "this is why neighborhood choice matters before detailed operating math.",
+          },
+          {
+            title: "permit sequence",
+            body: "building, health, and wet-facility approvals need to be scoped as one opening path rather than separate hopeful tasks.",
+            note: "a credible path lowers both carry and contingency.",
+          },
+          {
+            title: "design standard",
+            body: "to clear the premium, the finished product must feel like a place people choose socially, not only functionally.",
+            note: "sf will punish a version that feels value-engineered.",
+          },
+          {
+            title: "operator quality",
+            body: "the hospitality layer has to be strong enough that repeat visits come from atmosphere and ritual, not only from recovery need.",
+            note: "that is how the format avoids becoming a niche treatment venue.",
+          },
+        ],
+    kill: [
+      {
+        title: "+15% build cost",
+        body: `${fmt(buildStress.totalCapital)} total setup cost.`,
+        note: `${deltaFmt(buildStress.totalCapital - m.totalCapital)} versus the current case.`,
+      },
+      {
+        title: "+4 months to open",
+        body: `${fmt(delayStress.totalCapital)} total setup cost.`,
+        note: `${deltaFmt(delayStress.totalCapital - m.totalCapital)} versus the current case.`,
+      },
+      {
+        title: "+2 reserve months",
+        body: `${fmt(reserveStress.totalCapital)} total setup cost.`,
+        note: `${deltaFmt(reserveStress.totalCapital - m.totalCapital)} versus the current case.`,
+      },
+      {
+        title: "combined stress",
+        body: `${fmt(comboStress.totalCapital)} total setup cost.`,
+        note: `${deltaFmt(comboStress.totalCapital - m.totalCapital)} if build, timeline, and reserve all slip together.`,
+      },
+    ],
+  };
+
+
+  const riskActiveTitle = riskActive || detailedRisks[0].title;
+  const selectedRisk = detailedRisks.find((risk) => risk.title === riskActiveTitle) || detailedRisks[0];
+
+  const walletSegments = [
+    { label: "fitness", value: 350, color: "#8b7e6a", note: "existing equinox or bay club behavior" },
+    { label: "spa + treatments", value: 350, color: "#b19f89", note: "existing wellness spend" },
+    { label: "social dining", value: 600, color: "#7a7267", note: "hosting, dinners, nights out" },
+    { label: "subscriptions", value: 100, color: "#c8bfb2", note: "smaller recurring wellness lines" },
+  ];
+
+  const liquorSteps = isClub
+    ? [
+        { number: "1", title: "apply for type 57", time: "month 1", copy: "private-club path for full liquor, coordinated alongside the core permit path." },
+        { number: "2", title: "abc review", time: "months 2-4", copy: "background checks, public comment, and operating structure review." },
+        { number: "3", title: "premises inspection", time: "months 4-5", copy: "bar layout, service area, and premises readiness get inspected." },
+        { number: "4", title: "license issued", time: "months 5-6", copy: "the bar can open as part of the reserve social layer rather than as a later add-on." },
+      ]
+    : [
+        { number: "1", title: "license strategy", time: "month 1", copy: "decide early whether the flagship bar is core enough to warrant a full on-sale path." },
+        { number: "2", title: "abc review", time: "months 2-4", copy: "run alcohol review in parallel with the larger building and health path, not after it." },
+        { number: "3", title: "premises inspection", time: "months 4-5", copy: "physical readiness and service layout become part of opening coordination." },
+        { number: "4", title: "issued into opening plan", time: "months 5-6", copy: "the license path should be inside the launch critical path, not treated as an afterthought." },
+      ];
+
+  const cigarChecks = [
+    "owner-operated structure keeps the smoking area outside a normal staffed lounge model.",
+    "no employees in the smoking area keeps the operating structure cleaner.",
+    "separate negative-pressure ventilation keeps the club environment distinct.",
+    "tobacco permitting and counsel should be solved before it becomes a marketing feature.",
+  ];
+
+  const revenueBarItems = isClub
+    ? [
+        { label: "membership", value: m.membershipRev, color: "#a08b72" },
+        { label: "initiation", value: m.initRevSteadyState, color: "#8b6a46" },
+        { label: "f&b", value: m.fAndBRev, color: "#8b7e6a" },
+        { label: "treatments", value: m.treatmentRev, color: "#7a7267" },
+      ]
+    : [
+        { label: "membership", value: m.membershipRev, color: "#a08b72" },
+        { label: "walk-in", value: m.walkInRev, color: "#8b6a46" },
+        { label: "f&b", value: m.fAndBRev, color: "#8b7e6a" },
+        { label: "treatments", value: m.treatmentRev, color: "#7a7267" },
+      ];
+
+  const costBarItems = [
+    { label: "rent", value: m.rent, color: "#b19f89" },
+    { label: "staff", value: m.staff, color: "#8b7e6a" },
+    { label: "utilities", value: d.utilityAnnual, color: "#c8bfb2" },
+    { label: "cogs", value: m.cogs, color: "#7a7267" },
+    { label: "other opex", value: m.balCost, color: "#9a8f82" },
+  ];
+
+  const personaCards = personas[personaModel === "club" ? "club" : "large"];
+
+  return (
+    <div className="page">
+      <div className="topbar">
+        <div>
+          <div className="kicker">bathhouse feasibility / sf</div>
+          <h1>{topContent.pageTitle}</h1>
+          <div className="lede">{topContent.lede}</div>
         </div>
-        <div style={{flex:0.8,minWidth:200,paddingLeft:8,borderLeft:"1px solid rgba(139,126,106,0.12)"}}>
-          <div style={{fontSize:11,letterSpacing:"0.06em",color:"#8b7e6a",marginBottom:14}}>live output</div>
-          <LiveMetric label="total capital" value={fmt(m.totalCapital)} baseValue={fmt(mBase.totalCapital)}/>
-          <LiveMetric label="annual revenue" value={fmt(m.totalRev)} baseValue={fmt(mBase.totalRev)}/>
-          <LiveMetric label="ebitda" value={fmt(m.ebitda)} baseValue={fmt(mBase.ebitda)}/>
-          <LiveMetric label="monthly breakeven" value={fmt(m.monthlyBE)} baseValue={fmt(mBase.monthlyBE)}/>
+
+        <div>
+          <div className="kicker" style={{ marginBottom: 10 }}>default assumption band</div>
+          <div style={{ display: "grid", gap: 10, justifyItems: "end" }}>
+            <div>
+              <div className="mini-label" style={{ marginBottom: 6 }}>format</div>
+              <div className="button-row" style={{ justifyContent: "flex-end" }}>
+                <PillButton active={model === "club"} onClick={() => switchModel("club")}>bathhouse reserve</PillButton>
+                <PillButton active={model === "large"} onClick={() => switchModel("large")}>bathhouse sf</PillButton>
+              </div>
+            </div>
+            <div>
+              <div className="mini-label" style={{ marginBottom: 6 }}>case</div>
+              <div className="button-row" style={{ justifyContent: "flex-end" }}>
+                {["conservative", "base", "optimistic"].map((s) => (
+                  <PillButton key={s} active={scenario === s} onClick={() => switchScenario(s)}>{s}</PillButton>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <div className="hero-grid">
+        <div className="card">
+          <div className="eyebrow">decision frame</div>
+          <div className="hero-thesis">{topContent.thesis}</div>
+
+          <button className="metric-button clickable-surface" onClick={() => setModalOpen(true)}>
+            <div className="metric-label">{topContent.metricLabel}</div>
+            <div className="metric-value">{fmt(m.totalCapital)}</div>
+            <div className="metric-sub">{topContent.metricSub}</div><div className="clickable-cue" style={{ marginTop: 10 }}>click for assumptions</div>
+          </button>
+
+          <div className="metric-meta">
+            <div className="mini-tile">
+              <div className="mini-label">opening timeline</div>
+              <div className="mini-value">{fmtMonths(d.preOpenMonths)}</div>
+              <div className="mini-note">pre-open clock currently modeled</div>
+            </div>
+            <div className="mini-tile">
+              <div className="mini-label">capex / sq ft</div>
+              <div className="mini-value">{fmt(m.capexPerSqFt)}</div>
+              <div className="mini-note">{whole(d.sqFt)} sf footprint</div>
+            </div>
+            <div className="mini-tile">
+              <div className="mini-label">{isClub ? "optional phase 2" : "reserve buffer"}</div>
+              <div className="mini-value">{isClub ? fmt(reserveCompare.p2Cap) : fmtMonths(d.reserveMonths)}</div>
+              <div className="mini-note">{isClub ? `${whole(d.phase2SqFt || reserveCompareData.phase2SqFt)} sf expansion path` : `${fmt(m.wcReserve)} of opening reserve`}</div>
+            </div>
+          </div>
+
+          <div className="divider" />
+          <div className="eyebrow" style={{ marginBottom: 0 }}>{topContent.mixLabel}</div>
+          <StackBar items={breakdown} total={m.totalCapital} activeLabel={costActive} onSelect={setCostActive} />
+          <DetailPanel eyebrow="selected cost line" title={costDetail.label} value={fmt(costDetail.value)} copy={costDetail.copy} bullets={costDetail.bullets} />
+        </div>
+
+        <div className="card">
+          <div className="control-head">
+            <div>
+              <div className="eyebrow">setup cost lab</div>
+              <div className="control-title">{topContent.controlTitle}</div>
+            </div>
+            {hasOverrides && <button className="link-button" onClick={reset}>reset to {scenario}</button>}
+          </div>
+
+          <div className="muted">{topContent.controlCopy}</div>
+
+          {sliderDefs.map((slider) => (
+            <Slider
+              key={slider.key}
+              label={slider.label}
+              value={slider.value}
+              min={slider.min}
+              max={slider.max}
+              step={slider.step}
+              format={slider.format}
+              onChange={(v) => setO(slider.key, v)}
+            />
+          ))}
+
+          <div className="output-grid">
+            <div className="output-tile">
+              <div className="output-label">{isClub ? "construction + fitout" : "construction + wet systems"}</div>
+              <div className="output-value">{fmt(isClub ? m.buildout + m.ffe : m.buildout + m.mechanical)}</div>
+              <div className="output-base">base {fmt(isClub ? mBase.buildout + mBase.ffe : mBase.buildout + mBase.mechanical)}</div>
+            </div>
+            <div className="output-tile">
+              <div className="output-label">pre-open + reserve</div>
+              <div className="output-value">{fmt(m.preOpenRent + m.preOpenOther + m.wcReserve)}</div>
+              <div className="output-base">base {fmt(mBase.preOpenRent + mBase.preOpenOther + mBase.wcReserve)}</div>
+            </div>
+            <div className="output-tile">
+              <div className="output-label">annual revenue</div>
+              <div className="output-value">{fmt(m.totalRev)}</div>
+              <div className="output-base">base {fmt(mBase.totalRev)}</div>
+            </div>
+            <div className="output-tile">
+              <div className="output-label">{isClub ? "member target" : "payback"}</div>
+              <div className="output-value">{isClub ? whole(d.memberCount) : fmtPayback(m.paybackMonths)}</div>
+              <div className="output-base">base {isClub ? whole(mBase.memberCount) : fmtPayback(mBase.paybackMonths)}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <section className="section">
+        <div className="section-head">
+          <div>
+            <div className="kicker">competitive whitespace</div>
+            <div className="section-title">{isClub ? "reserve competes in premium belonging as much as in wellness" : "the white space is deep thermal product + real social energy"}</div>
+          </div>
+          <div className="section-note">click a dot to read the comp and why it matters.</div>
+        </div>
+
+        <div className="matrix-wrap">
+          <div className="matrix-shell">
+            <div className="matrix-axis-title y">{isClub ? "social gravity" : "social energy"}</div>
+            <div className="matrix-axis-title x">{isClub ? "wellness depth" : "thermal depth"}</div>
+            <div className="matrix">
+              <div className="matrix-axis x-left">less</div>
+              <div className="matrix-axis x-right">more</div>
+              <div className="matrix-axis y-bottom">less</div>
+              <div className="matrix-axis y-top">more</div>
+
+              {matrixPoints.map((point) => (
+                <div
+                  key={point.label}
+                  className={`matrix-point ${matrixActive === point.label ? "active" : ""}`}
+                  style={{ left: `${point.x}%`, bottom: `${point.y}%` }}
+                  onClick={() => setMatrixActive(point.label)}
+                >
+                  <div className="matrix-dot" style={{ background: point.color, width: point.label === (isClub ? "bathhouse reserve" : "bathhouse sf") ? 16 : 14, height: point.label === (isClub ? "bathhouse reserve" : "bathhouse sf") ? 16 : 14 }} />
+                  <div className="matrix-tag">{point.label}</div>
+                </div>
+              ))}
+            </div>
+            
+          </div>
+
+          <div style={{ minWidth: 0 }}><div className="clickable-cue" style={{ marginBottom: 10 }}>click a dot for detail</div><MatrixDetailCard point={matrixDetail} /></div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="section-head">
+          <div>
+            <div className="kicker">people</div>
+            <div className="section-title">member personas</div>
+          </div>
+          <div className="local-toggle">
+            <PillButton active={personaModel === "club"} onClick={() => setPersonaModel("club")}>bathhouse reserve</PillButton>
+            <PillButton active={personaModel === "large"} onClick={() => setPersonaModel("large")}>bathhouse sf</PillButton>
+          </div>
+        </div>
+
+        <div className="auto-grid">
+          {personaCards.map((persona) => <PersonaCard key={persona.name} {...persona} />)}
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="section-head">
+          <div>
+            <div className="kicker">where it can work</div>
+            <div className="section-title">{isClub ? "where reserve should live" : "where the flagship should live"}</div>
+          </div>
+          <div className="section-note">
+            {isClub ? "for reserve, neighborhood choice shapes the club feel as much as the buildout. for the flagship, it also determines whether the shell can support the full program." : "the right neighborhood is not only a branding choice. it changes shell quality, capex risk, and how much design work is required to create destination energy."}
+          </div>
+        </div>
+
+        <div className="auto-grid">
+          {neighborhoods.map((location) => <LocationCard key={location.name} {...location} />)}
+        </div>
+      </section>
+
+      {isClub && (
+        <section className="section">
+          <div className="section-head">
+            <div>
+              <div className="kicker">wallet share</div>
+              <div className="section-title">reserve layers into an existing premium habit stack</div>
+            </div>
+            <div className="section-note">this is less a replacement for equinox or the battery than a new line item that has to feel socially distinct enough to earn its slot.</div>
+          </div>
+
+          <WalletShareBar
+            segments={walletSegments}
+            note="reserve sits closest to spa, hosting, and premium social spend. the underwriting question is whether it earns a recurring place in that stack."
+          />
+        </section>
+      )}
+
+      <section className="section">
+        <div className="section-head">
+          <div>
+            <div className="kicker">belief stack</div>
+            <div className="section-title">what has to be true</div>
+          </div>
+          <div className="section-note">open any card to see the evidence, where the case can break, and the mitigant.</div>
+        </div>
+
+        <div className="auto-grid">
+          {beliefs.map((belief) => (
+            <button
+              key={belief.title}
+              className="card card-tight clickable-surface"
+              style={{ textAlign: "left", border: "1px solid var(--line)", cursor: "pointer", display: "flex", alignItems: "flex-start" }}
+              onClick={() => setBeliefActive(belief)}
+            >
+              <div className="expando-header">
+                <div>
+                  <div className="card-title" style={{ fontSize: 30, marginBottom: 6 }}>{belief.title}</div>
+                  <div className="card-copy">{belief.summary}</div>
+                  <div className="clickable-cue" style={{ marginTop: 12 }}>click for evidence and break risk</div>
+                </div>
+                <span className={`badge ${belief.confidence === "high" ? "high" : belief.confidence === "medium" ? "medium" : "low"}`}>{belief.confidence}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="section-head">
+          <div>
+            <div className="kicker">access and licensing</div>
+            <div className="section-title">{isClub ? "liquor license path" : "bar and liquor path"}</div>
+          </div>
+          <div className="section-note">{isClub ? "for reserve, a credible bar path matters because hosting and dinner are part of the membership case." : "for the flagship, the bar path is not the whole case, but it still belongs inside the opening critical path."}</div>
+        </div>
+
+        <TimelineSection steps={liquorSteps} />
+      </section>
+
+      {isClub && (
+        <section className="section">
+          <div className="section-head">
+            <div>
+              <div className="kicker">reserve-only detail</div>
+              <div className="section-title">cigar lounge feasibility</div>
+            </div>
+            <div className="section-note">this should be treated as a stickiness and identity feature, not the core revenue thesis.</div>
+          </div>
+
+          <div className="auto-grid" style={{ gridTemplateColumns: "minmax(0,1.1fr) minmax(260px,.9fr)" }}>
+            <div className="card card-tight">
+              <div className="eyebrow">legal path</div>
+              <Bul items={cigarChecks} />
+            </div>
+            <div className="card card-tight">
+              <div className="eyebrow">member value</div>
+              <Bul items={[
+                "locker and retail economics are real, but secondary to the retention story.",
+                "the bigger value is ritual: a reason to linger, host, and return with the same circle.",
+                "no obvious sf peer combines wellness and this kind of club ritual in one place.",
+              ]} />
+            </div>
+          </div>
+        </section>
+      )}
+
+
+      <section className="section">
+        <div className="section-head">
+          <div>
+            <div className="kicker">risk matrix</div>
+            <div className="section-title">where the case can actually break</div>
+          </div>
+          <div className="section-note">click a dot or a line item to see what matters, what to do about it, and what the next diligence step should be.</div>
+        </div>
+
+        <div className="risk-layout">
+          <RiskMatrix items={detailedRisks} activeTitle={riskActiveTitle} onSelect={setRiskActive} />
+          <div className="card card-tight">
+            <div className="eyebrow">selected risk</div>
+            <div className="card-title" style={{ fontSize: 30 }}>{selectedRisk.title}</div>
+            <div className="card-copy" style={{ marginBottom: 12 }}>{selectedRisk.summary}</div>
+            <div className="score-grid" style={{ marginBottom: 14 }}>
+              <MatrixScoreRow label="probability" value={selectedRisk.probability === "high" ? 5 : selectedRisk.probability === "medium" ? 3 : 2} color={selectedRisk.color} />
+              <MatrixScoreRow label="impact" value={selectedRisk.impact === "critical" ? 5 : selectedRisk.impact === "high" ? 4 : selectedRisk.impact === "medium" ? 3 : 2} color={selectedRisk.color} />
+            </div>
+            <div className="detail-kicker">why it matters</div>
+            <div className="card-copy" style={{ marginBottom: 12 }}>{selectedRisk.why}</div>
+            <div className="detail-kicker">mitigant</div>
+            <div className="card-copy" style={{ marginBottom: 12 }}>{selectedRisk.mitigant}</div>
+            <div className="detail-kicker">next diligence step</div>
+            <div className="card-copy">{selectedRisk.nextStep}</div>
+
+            <div className="risk-list">
+              {detailedRisks.map((risk, index) => (
+                <button key={risk.title} className={riskActiveTitle === risk.title ? "active" : ""} onClick={() => setRiskActive(risk.title)}>
+                  {index + 1}. {risk.title}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="section">
+        <div className="section-head">
+          <div>
+            <div className="kicker">appendix</div>
+            <div className="section-title">appendix</div>
+          </div>
+          <div className="section-note">format comparison comes first. the sections below are labeled explicitly for reserve or bathhouse sf.</div>
+        </div>
+
+        <Accordion title="format comparison" summary={`reserve setup cost ${fmt(reserveCompare.totalCapital)} · bathhouse sf setup cost ${fmt(flagshipCompare.totalCapital)}.`}>
+          <Tbl headers={["metric", "bathhouse reserve", "bathhouse sf"]} rows={comparisonRows} />
+        </Accordion>
+
+        <Accordion title={isClub ? "reserve format capital stack and scenario band" : "bathhouse sf capital stack and scenario band"} summary={`current format setup cost ${fmt(m.totalCapital)}. base-case annual revenue ${fmt(baseCase.totalRev)}.`} defaultOpen={false}>
+          <div className="auto-grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
+            <Tbl headers={["line item", "amount", "% of total"]} rows={capitalRows} />
+            <Tbl headers={["metric", "conservative", "base", "optimistic"]} rows={scenarioRows} />
+          </div>
+        </Accordion>
+
+        <Accordion title={isClub ? "reserve format operating detail" : "bathhouse sf format operating detail"} summary={`annual revenue ${fmt(m.totalRev)} · profit ${fmt(m.profit)} · payback ${fmtPayback(m.paybackMonths)}`}>
+          <div className="dual-bars" style={{ marginBottom: 18 }}>
+            <SimpleBars title="current format revenue mix" items={revenueBarItems} total={m.totalRev} />
+            <SimpleBars title="current format cost mix" items={costBarItems} total={m.totalOpex} />
+          </div>
+          <div className="auto-grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
+            <Tbl headers={["revenue stream", "annual", "% of total"]} rows={revenueRows} />
+            <Tbl headers={["cost line", "annual", "% of revenue"]} rows={opexRows} />
+          </div>
+        </Accordion>
+
+        <Accordion title="cross-format diligence notes" summary="items to replace with site-specific findings once a shell is identified.">
+          <div className="card card-tight">
+            <Bul items={[
+              "replace generalized wet-work assumptions with shell-specific mechanical, drainage, and utility notes.",
+              "swap neighborhood-level permitting assumptions for address-level planning, building, and health-path findings.",
+              "tighten the modal ranges with actual contractor, landlord, and expediter feedback once tours begin.",
+            ]} />
+          </div>
+        </Accordion>
+      </section>
+
+      <div className="footer-note">
+        feasibility study prepared april 2026. projections are directional estimates based on market logic and comparable assumptions, not investment advice.
+      </div>
+
+      <Modal open={!!beliefActive} onClose={() => setBeliefActive(null)}>
+        {beliefActive && (
+          <>
+            <div className="modal-head">
+              <div>
+                <div className="eyebrow">belief detail</div>
+                <div className="section-title" style={{ fontSize: 40 }}>{beliefActive.title}</div>
+                <div className="section-note" style={{ maxWidth: 620 }}>{beliefActive.summary}</div>
+              </div>
+              <button className="close-btn" onClick={() => setBeliefActive(null)}>×</button>
+            </div>
+
+            <div className="modal-grid">
+              <div className="modal-card">
+                <h4>evidence</h4>
+                <p>{beliefActive.evidence}</p>
+              </div>
+              <div className="modal-card">
+                <h4>the risk</h4>
+                <p>{beliefActive.risk}</p>
+              </div>
+              <div className="modal-card">
+                <h4>mitigant</h4>
+                <p>{beliefActive.mitigant}</p>
+              </div>
+            </div>
+          </>
+        )}
+      </Modal>
+
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+        <div className="modal-head">
+          <div>
+            <div className="eyebrow">assumption detail</div>
+            <div className="section-title" style={{ fontSize: 42 }}>{fmt(m.totalCapital)}</div>
+            <div className="section-note" style={{ maxWidth: 560 }}>
+              these are the assumptions and kill tests behind the current setup-cost number.
+            </div>
+          </div>
+          <button className="close-btn" onClick={() => setModalOpen(false)}>×</button>
+        </div>
+
+        <div className="tab-row">
+          {[
+            ["build", "build assumptions"],
+            ["timeline", "timeline"],
+            ["gating", "sf-specific gating"],
+            ["kill", "kill tests"],
+          ].map(([key, label]) => (
+            <button key={key} className={`tab-btn ${modalTab === key ? "active" : ""}`} onClick={() => setModalTab(key)}>
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <div className="modal-grid">
+          {modalContent[modalTab].map((item) => (
+            <div className="modal-card" key={item.title}>
+              <h4>{item.title}</h4>
+              <p>{item.body}</p>
+              <small>{item.note}</small>
+            </div>
+          ))}
+        </div>
+      </Modal>
     </div>
-
-    <div>
-      <Section title="1. market landscape and comps" summary="sf has 5 bathhouse/spa operators and 3+ social clubs, but no uhnw wellness-social hybrid.">
-        <H3>sf competitive landscape</H3>
-        <Tbl headers={["venue","format","entry price","membership","positioning"]} rows={[
-          ["archimedes banya","traditional bathhouse, 6k sq ft","$45-55","punch cards","utilitarian, communal"],
-          ["kabuki springs","japanese bathhouse, 5k sq ft","$35-50","none","dated but beloved"],
-          ["onsen","small hot spring, 2k sq ft","$55-65","none","intimate, outdoor"],
-          ["sweathouz","contrast therapy franchise","$40-55","$149-249/mo","recovery-focused"],
-          ["sens spa","hotel spa","$70-90","none","traditional format"],
-        ]}/>
-        <H3>sf social clubs</H3>
-        <Tbl headers={["club","initiation","monthly dues","cap","focus"]} rows={[
-          ["the battery","$30k","$500/mo","~3k","tech, arts, dining, hotel"],
-          ["pacific-union club","$25-40k","$300-400/mo","~1.5k","legacy business elite"],
-          ["olympic club","$15-30k","$300-500/mo","~5k","athletics, golf"],
-        ]}/>
-        <H3>national uhnw wellness comps</H3>
-        <Tbl headers={["concept","initiation","dues","cap","format"]} rows={[
-          ["aman club nyc","$100k","$15k/yr","~1k","wellness + dining, ultra-exclusive"],
-          ["core club nyc","$50k","$18k/yr","~900","wellness + workspace + dining"],
-          ["remedy place la/nyc","$5-10k","$500-750/mo","~500","wellness-forward, smaller"],
-          ["casa cipriani nyc","$10-15k","$1k/mo","~1k","hotel + club + wellness"],
-          ["zero bond nyc","$3.5k","$350/mo","~2k","lounge + events"],
-        ]}/>
-        <Bul items={[
-          "no sf club combines wellness (bathhouse, sauna, treatments) with a true social membership and curated programming",
-          "the battery is the closest comp: same demo, strong brand, but minimal wellness. position as complement, not competitor",
-          "bathhouse nyc proves demand in manhattan ($41m raised, ~$120m ttm revenue). sf is culturally aligned but 1/10th the density",
-          "the gap is at the intersection of wellness and community. existing options are either wellness without social or social without wellness",
-        ]}/>
-      </Section>
-
-      <Section title="2. real estate and buildout costs" summary={isClub?scenario+" case: "+fmt(m.buildout)+" buildout ("+fmt(d.buildoutPerSqFt)+"/sq ft x "+num(d.sqFt)+" sq ft). target: jackson square or pac heights.":scenario+" case: "+fmt(m.buildout+m.mechanical)+" construction ("+fmt(d.buildoutPerSqFt)+"/sq ft x "+num(d.sqFt)+" sq ft + $2m mechanical). target: soma."}>
-        <H3>capital stack ({scenario} case)</H3>
-        <Tbl headers={["line item","amount","% of total"]} rows={[
-          ["construction ("+num(d.sqFt)+" sq ft at "+fmt(d.buildoutPerSqFt)+"/sq ft)",fmt(m.buildout),pct(m.buildout/m.totalCapital)],
-          ...(!isClub?[["mechanical systems (pools, hvac, steam)",fmt(m.mechanical),pct(m.mechanical/m.totalCapital)]]:[]),
-          ["ff&e and equipment",fmt(m.ffe),pct(m.ffe/m.totalCapital)],
-          ["pre-opening rent ("+d.preOpenMonths+" months)",fmt(m.preOpenRent),pct(m.preOpenRent/m.totalCapital)],
-          ["pre-opening staff and marketing",fmt(m.preOpenOther),pct(m.preOpenOther/m.totalCapital)],
-          ["permits and professional fees",fmt(m.permits),pct(m.permits/m.totalCapital)],
-          ["working capital reserve",fmt(m.wcReserve),pct(m.wcReserve/m.totalCapital)],
-          ["total",fmt(m.totalCapital),"100%"],
-        ]}/>
-        <Bul items={[
-          {text:"sf-specific cost drivers",sub:["prevailing wage adds 15-25% to labor costs","wet facility permitting takes 12-18 months","seismic retrofit can add $50-100/sq ft","pg&e rates ($0.30-0.35/kwh) are 2.5x national average"]},
-          {text:"location considerations",sub:isClub?["jackson square: 2-4k sq ft, $65-85/sq ft nnn, historic character","pacific heights: fillmore or sacramento, $55-75/sq ft, residential affluent","avoid fidi/soma: wrong energy for intimate uhnw concept"]:["soma: larger floor plates, $45-65/sq ft nnn, 15-20k sq ft available","jackson square: premium but hard to find 18k contiguous","dogpatch: warehouse conversion, $40-55/sq ft, weaker traffic"]},
-        ]}/>
-      </Section>
-
-      <Section title="3. revenue model and capacity math" summary={scenario+" case: "+fmt(m.totalRev)+"/yr at maturity, "+pct(m.ebitdaMargin)+" ebitda margin, breakeven month "+m.breakEvenMonth+"."}>
-        <H3>revenue by stream ({scenario} case, annual at maturity)</H3>
-        <Tbl headers={["stream","annual","% of total","driver"]} rows={[
-          ["membership dues",fmt(m.membershipRev),pct(m.membershipRev/m.totalRev),d.memberCount+" x "+fmt(d.monthlyDues)+"/mo"],
-          ...(isClub?[["initiation fees (yr 1 only)",fmt(m.initRev),"n/a",d.memberCount+" x "+fmt(d.initiationFee)]]:
-            [["walk-in admissions",fmt(m.walkInRev),pct(m.walkInRev/m.totalRev),num(d.walkInVisitsMonth)+"/mo x "+fmt(d.walkInAvgSpend)]]),
-          ["f&b",fmt(m.fAndBRev),pct(m.fAndBRev/m.totalRev),pct(d.fAndBAttach)+" attach, "+fmt(d.avgFandBSpend)+" avg"],
-          ["treatments",fmt(m.treatmentRev),pct(m.treatmentRev/m.totalRev),pct(d.treatmentAttach)+" attach, "+fmt(d.avgTreatmentSpend)+" avg"],
-          ["total",fmt(m.totalRev),"100%",""],
-        ]}/>
-        <H3>operating costs ({scenario} case, annual)</H3>
-        <Tbl headers={["expense","amount","% of revenue"]} rows={[
-          ["rent",fmt(m.rent),pct(m.rent/m.totalRev)],
-          ["staff ("+d.staffCount+" ftes)",fmt(m.staff),pct(m.staff/m.totalRev)],
-          ["utilities",fmt(d.utilityAnnual),pct(d.utilityAnnual/m.totalRev)],
-          ["other opex",fmt(isClub?300000:800000),pct((isClub?300000:800000)/m.totalRev)],
-          ["total opex",fmt(m.totalOpex),pct(m.totalOpex/m.totalRev)],
-          ["ebitda",fmt(m.ebitda),pct(m.ebitdaMargin)],
-        ]}/>
-      </Section>
-
-      <Section title="4. demand validation and wallet share" summary="bathhouse membership is a complement to fitness (different budget line), not a substitute.">
-        <H3>sf premium membership landscape</H3>
-        <Tbl headers={["club/gym","monthly cost","category","overlap"]} rows={[
-          ["equinox","$260-350/mo","fitness","low: different use case"],
-          ["bay club","$200-350/mo","fitness + social","moderate: similar demo"],
-          ["the battery","$500/mo + $30k","social","high: same demo, complementary"],
-          ["sweathouz","$149-249/mo","recovery","moderate: similar modality"],
-          ["heimat","$200-300/mo","fitness","low: crossfit/community"],
-        ]}/>
-        <Bul items={[
-          {text:"target demo wellness spend (sf, hhi $200k+)",sub:["fitness: $250-400/mo","spa/treatments: $200-400/mo","wellness subscriptions: $50-150/mo","social dining: $500-1k/mo","total addressable wallet: $1-2k/mo"]},
-          {text:"the membership is a complement, not a substitute",sub:["sits in the same budget line as spa and social dining, not fitness","average affluent sf resident holds 2-3 premium memberships","fitness churn: 30-40%/yr. social club churn: 15-25%/yr","key retention driver: social connection. 3+ friendships = 95%+ retention"]},
-          {text:"demand signals",sub:["bathhouse nyc: $41m raised, ~$120m ttm","othership toronto: 4 locations, $29m raised, 50k+ members","sweathouz: 40+ franchise locations","sf has zero large-format premium bathhouse concepts"]},
-        ]}/>
-      </Section>
-
-      <Section title="5. concept and member personas" summary="4 personas drive distinct usage patterns, self-balancing peak and off-peak demand.">
-        <H3>member personas</H3>
-        <Tbl headers={["persona","profile","usage","spend","mix"]} rows={[
-          ["sarah (wellness)","42, tech exec, $500k+","mornings 3x/week","$1.5-2k","~40%"],
-          ["james (networker)","55, pe/vc, $1m+","afternoon 2x/week","$2-3k","~20%"],
-          ["priya + michael","late 30s, dual $400k+","fri-sat evenings","$1.5-2.5k","~25%"],
-          ["alex (nightlife)","29, tech, $250k+","late eve 2-3x/week","$1-2k","~15%"],
-        ]}/>
-        <H3>weekly programming</H3>
-        <Tbl headers={["day","programming","est. rev","visits"]} rows={[
-          ["monday","quiet day, wellness mornings","$4-6k","40-60"],
-          ["tuesday","speaker series or clinic","$6-9k","60-80"],
-          ["wednesday","supper club (set menu)","$10-14k","70-90"],
-          ["thursday","cigar evening, wine tasting","$12-16k","80-110"],
-          ["friday","full social: bar, dining, music","$14-18k","90-120"],
-          ["saturday","wellness day, curated evening","$12-16k","80-110"],
-          ["sunday","sunday supper (communal)","$5-8k","30-50"],
-          ["weekly total","","$63-87k","450-620"],
-        ]}/>
-        <Bul items={["annual f&b + amenity revenue: $3.3-4.5m","persona mix is self-balancing across time slots","members visiting 1x+/week retain at 90%+. target: 1.0-1.2 visits/week"]}/>
-      </Section>
-
-      <Section title="6. amenity deep dive: bar, cigar, and wellness" summary="cigar lounge legally viable (ca tobacco exemption). bar requires type 57 abc license.">
-        <H3>cigar lounge feasibility</H3>
-        <Bul items={[
-          {text:"legal path in sf/ca",sub:["ca labor code 6404.5(d) exempts owner-operated tobacco retail from smoking bans","private club qualifies if no employees in smoking area","grand havana room sf operates under this exemption","tobacco retail permit: $692/yr, density restriction compliance","physically separated with negative-pressure ventilation"]},
-          {text:"economics",sub:["locker programs: $500-2k/yr x 30-50 lockers = $15-100k/yr","cigar retail: 40-60% markup, $100-500k/yr","powerful retention driver: no other sf wellness club has one"]},
-        ]}/>
-        <H3>bar and liquor license</H3>
-        <Bul items={[
-          {text:"abc license options",sub:["type 57 (special on-sale general): full liquor at a club, most appropriate","type 47 (restaurant): works if food service is integral","cost: $15-25k + $5-10k legal. timeline: 3-6 months"]},
-          {text:"bar economics",sub:["target: $26-30 avg beverage check","cogs: 18-22% for curated spirits","bar is the social anchor, not standalone profit center"]},
-        ]}/>
-        <H3>amenity benchmarking</H3>
-        <Tbl headers={["amenity","table stakes","differentiator","notes"]} rows={[
-          ["bathhouse / sauna / steam","yes","","core product"],
-          ["dining / f&b","yes","","quality over variety"],
-          ["treatment rooms","yes","","3-5 rooms"],
-          ["members lounge","yes","","social anchor"],
-          ["cigar lounge","","yes","rare in sf, retention hook"],
-          ["outdoor terrace","","yes","year-round in sf"],
-          ["hotel rooms","","yes (phase 2+)","later phase"],
-        ]}/>
-      </Section>
-
-      <Section title="7. competitive positioning" summary="positioned at the intersection of wellness and social, whitespace no sf club occupies.">
-        <Bul items={[
-          "no sf club occupies the intersection of deep wellness and strong community",
-          "the battery: same demo, strong brand, minimal wellness. complement, not competitor. many will hold both",
-          "bathhouse concepts (banya, kabuki, onsen): wellness but no social infrastructure. transaction-based",
-          "remedy place: closest national model but skews younger. bathhouse reserve should be more aman than remedy place",
-          "positioning: your third place between home and work, anchored in wellness, designed for the relationships that matter",
-          "cigar lounge and curated programming create sticky social rituals pure wellness concepts can not replicate",
-        ]}/>
-        <H3>positioning spectrum</H3>
-        <Tbl headers={["","bathhouse reserve","the battery","remedy place","banya"]} rows={[
-          ["wellness","deep","minimal","moderate","deep"],
-          ["social","curated, intimate","networking","classes","informal"],
-          ["exclusivity","200-500 members","~3k members","~500 members","public"],
-          ["f&b","destination-level","excellent","light","basic"],
-          ["programming","cigar, wine, supper","arts, dining","workshops","none"],
-          ["price",fmt(d.monthlyDues)+"/mo + "+fmt(d.initiationFee),"$500/mo + $30k","$500-750/mo","$45/visit"],
-        ]}/>
-      </Section>
-
-      <Section title="8. scenario analysis" summary={"conservative: "+fmt(cons.ebitda)+" ebitda. base: "+fmt(base.ebitda)+". optimistic: "+fmt(opt.ebitda)+"."}>
-        <Tbl headers={["metric","conservative","base","optimistic"]} rows={[
-          ["total capital",fmt(cons.totalCapital),fmt(base.totalCapital),fmt(opt.totalCapital)],
-          ["annual revenue",fmt(cons.totalRev),fmt(base.totalRev),fmt(opt.totalRev)],
-          ["ebitda",fmt(cons.ebitda),fmt(base.ebitda),fmt(opt.ebitda)],
-          ["ebitda margin",pct(cons.ebitdaMargin),pct(base.ebitdaMargin),pct(opt.ebitdaMargin)],
-          ["breakeven","month "+SCENARIOS.conservative[isClub?"club":"large"].breakEvenMonth,"month "+SCENARIOS.base[isClub?"club":"large"].breakEvenMonth,"month "+SCENARIOS.optimistic[isClub?"club":"large"].breakEvenMonth],
-          ["members",String(SCENARIOS.conservative[isClub?"club":"large"].memberCount),String(SCENARIOS.base[isClub?"club":"large"].memberCount),String(SCENARIOS.optimistic[isClub?"club":"large"].memberCount)],
-          ...(isClub?[["initiation fee",fmt(SCENARIOS.conservative.club.initiationFee),fmt(SCENARIOS.base.club.initiationFee),fmt(SCENARIOS.optimistic.club.initiationFee)]]
-            :[["walk-ins/mo",num(SCENARIOS.conservative.large.walkInVisitsMonth),num(SCENARIOS.base.large.walkInVisitsMonth),num(SCENARIOS.optimistic.large.walkInVisitsMonth)]]),
-        ]}/>
-        <H3>what separates each scenario</H3>
-        <Bul items={[
-          {text:"conservative: slower ramp, sf friction",sub:["permits take "+(isClub?"12":"18")+" months","membership builds 20% slower","f&b attach below 40%"]},
-          {text:"base: strong execution",sub:["permits on timeline, pre-sales at 60%","programming drives 1x+/week visits","waitlist within 12-18 months"]},
-          {text:"optimistic: fast social traction",sub:["founding round oversubscribed","f&b becomes a destination","cigar programming drives 30%+ of evening visits"]},
-        ]}/>
-      </Section>
-
-      <Section title="9. risk matrix with mitigants" summary={"top risks: permitting delays, "+(isClub?"founding member recruitment":"ramp cash burn")+", per-capita assumption."}>
-        <Tbl headers={["risk","prob.","impact","mitigant"]} rows={isClub?[
-          ["permitting delays","high","high","budget 12-14 months. expediter. target existing plumbing"],
-          ["founding member shortfall","medium","high","75 commitments before lease. non-refundable deposits"],
-          ["f&b misses uhnw standard","medium","high","hire f&b director from battery/casa cipriani caliber"],
-          ["churn exceeds 20%/yr","low-med","medium","social programming. 3+ friendships = 95%+ retention"],
-          ["3.5k sq ft too small","medium","medium","intimacy is the feature. natural scarcity"],
-          ["phase 2 fundraise fails","low","medium","phase 1 self-sustaining at $1.5m ebitda"],
-          ["battery adds wellness","low","low","networking brand can not replicate wellness-native culture"],
-          ["cigar lounge scrutiny","low-med","medium","tobacco counsel. ca labor code 6404.5(d) exemption"],
-        ]:[
-          ["permitting delays (18+ mo)","high","critical","budget 14-18 months. $2.5m pre-opening burn"],
-          ["ramp cash burn","high","critical","trough $3-5m. need $18-22m or credit facility"],
-          ["per-capita assumption fails","medium","high","needs 3-4x nyc rate. if 2x, revenue down 30-40%"],
-          ["construction above $600/sq ft","medium","high","budget $500-600 as base"],
-          ["membership ramp slow","medium","medium","walk-ins provide 40-50% of year 1 revenue"],
-          ["utility overshoot","medium","low","heat recovery, solar to mitigate pg&e rates"],
-          ["labor tightness","medium","medium","above-market comp for key hires"],
-          ["competitive entry","low","medium","$10m+ and 18-month build = natural moat"],
-        ]}/>
-        <H3>the single biggest risk</H3>
-        <Bul items={isClub?[
-          "founding member recruitment. depends on 180-250 members at "+fmt(d.initiationFee)+" initiation before opening. requires personal, network-driven process",
-          "mitigant: loi (not lease) contingent on 75 founding deposits. prove demand before committing to the space",
-        ]:[
-          "ramp period, not steady-state economics. burns $400-500k/month early. conservative breakeven at month 22-24 creates $3-5m cash gap",
-          "mitigant: raise $18-22m (not $15m), or $3-5m working capital facility. alternatively, bathhouse reserve de-risks by starting smaller",
-        ]}/>
-      </Section>
-
-      <Section title="10. sources" summary="pitchbook, web research, club websites, industry reports, sf regulatory filings.">
-        <Bul items={[
-          "bathhouse nyc: pitchbook ($41m raised, ~$120m ttm revenue)",
-          "sweathouz: franchise disclosure documents, pitchbook ($47m+ funding)",
-          "othership toronto: crunchbase ($29m raised)",
-          "the battery sf: website, press ($30k initiation, $500/mo)",
-          "pacific-union club: member directory, press ($25-40k initiation)",
-          "aman club nyc: press, investor materials ($100k initiation, $15k/yr)",
-          "core club nyc: press, member interviews ($50k initiation, $18k/yr)",
-          "remedy place: website, pitchbook ($5-10k initiation, $500-750/mo)",
-          "sf real estate: cbre, cushman & wakefield market reports",
-          "ca abc licensing: abc.ca.gov (type 57, 67 requirements)",
-          "ca tobacco: labor code 6404.5, sf health code article 19f",
-          "wellness industry: global wellness institute 2025, mckinsey wellness survey",
-          "consumer spending: bls consumer expenditure survey, census acs",
-          "pg&e: commercial rate schedules (2025)",
-        ]}/>
-      </Section>
-    </div>
-
-    <div style={{marginTop:48,paddingTop:16,fontSize:11,color:"#b5aa9a"}}>feasibility study prepared april 2026. projections are estimates based on market data and comparable analysis. not investment advice.</div>
-  </div>);
+  );
 }
+
 
 ReactDOM.render(React.createElement(App), document.getElementById("root"));
+
 </script>
 </body>
 </html>
+
