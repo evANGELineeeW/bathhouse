@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feasibility Study / San Francisco</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; color: #5a5249; background: #faf7f2; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  input[type=range] { -webkit-appearance: none; height: 2px; background: #ddd5c8; outline: none; width: 100%; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #8b7e6a; cursor: pointer; border: 2px solid #faf7f2; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+  input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #8b7e6a; cursor: pointer; border: 2px solid #faf7f2; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+  button { font-family: 'DM Sans', sans-serif; }
+  table { border-spacing: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useCallback } = React;
+
+const SCENARIOS = {
+  conservative: {
+    large: { initiationFee:0,monthlyDues:197,memberCount:600,walkInVisitsMonth:1500,walkInAvgSpend:65,fAndBAttach:0.35,avgFandBSpend:22,treatmentAttach:0.20,avgTreatmentSpend:120,buildoutPerSqFt:600,sqFt:18000,leasePerSqFt:75,preOpenMonths:18,staffCount:50,avgSalary:72000,utilityAnnual:620000,ebitdaMargin:0.12,breakEvenMonth:24 },
+    club: { initiationFee:25000,monthlyDues:1200,memberCount:180,fAndBAttach:0.55,avgFandBSpend:65,treatmentAttach:0.25,avgTreatmentSpend:180,buildoutPerSqFt:550,sqFt:3500,leasePerSqFt:80,preOpenMonths:12,staffCount:18,avgSalary:78000,utilityAnnual:180000,ebitdaMargin:0.15,breakEvenMonth:20,phase2SqFt:9000,phase2BuildoutPerSqFt:500,phase2Members:350 },
+  },
+  base: {
+    large: { initiationFee:300,monthlyDues:225,memberCount:850,walkInVisitsMonth:2500,walkInAvgSpend:70,fAndBAttach:0.45,avgFandBSpend:26,treatmentAttach:0.28,avgTreatmentSpend:135,buildoutPerSqFt:500,sqFt:18000,leasePerSqFt:65,preOpenMonths:14,staffCount:45,avgSalary:70000,utilityAnnual:520000,ebitdaMargin:0.20,breakEvenMonth:16 },
+    club: { initiationFee:35000,monthlyDues:1500,memberCount:250,fAndBAttach:0.65,avgFandBSpend:75,treatmentAttach:0.30,avgTreatmentSpend:200,buildoutPerSqFt:450,sqFt:3500,leasePerSqFt:70,preOpenMonths:10,staffCount:15,avgSalary:75000,utilityAnnual:150000,ebitdaMargin:0.22,breakEvenMonth:14,phase2SqFt:9000,phase2BuildoutPerSqFt:450,phase2Members:500 },
+  },
+  optimistic: {
+    large: { initiationFee:500,monthlyDues:250,memberCount:1100,walkInVisitsMonth:3500,walkInAvgSpend:75,fAndBAttach:0.55,avgFandBSpend:30,treatmentAttach:0.35,avgTreatmentSpend:150,buildoutPerSqFt:450,sqFt:18000,leasePerSqFt:58,preOpenMonths:12,staffCount:50,avgSalary:70000,utilityAnnual:480000,ebitdaMargin:0.28,breakEvenMonth:10 },
+    club: { initiationFee:50000,monthlyDues:2000,memberCount:300,fAndBAttach:0.70,avgFandBSpend:85,treatmentAttach:0.35,avgTreatmentSpend:220,buildoutPerSqFt:400,sqFt:3500,leasePerSqFt:65,preOpenMonths:9,staffCount:15,avgSalary:75000,utilityAnnual:140000,ebitdaMargin:0.28,breakEvenMonth:10,phase2SqFt:9000,phase2BuildoutPerSqFt:400,phase2Members:600 },
+  },
+};
+
+const fmt=(n)=>{if(!n&&n!==0)return"$0";if(Math.abs(n)>=1e9)return"$"+(n/1e9).toFixed(1)+"bn";if(Math.abs(n)>=1e6)return"$"+(n/1e6).toFixed(1)+"m";if(Math.abs(n)>=1e3)return"$"+(n/1e3).toFixed(0)+"k";return"$"+n.toFixed(0)};
+const num=(n)=>{if(!n&&n!==0)return"0";if(Math.abs(n)>=1e3)return(n/1e3).toFixed(1)+"k";return String(n)};
+const pct=(n)=>{if(!n&&n!==0)return"0%";return(n*100).toFixed(0)+"%"};
+
+function calc(d,isClub){
+  const buildout=d.buildoutPerSqFt*d.sqFt;
+  const preOpenRent=(d.leasePerSqFt*d.sqFt/12)*d.preOpenMonths;
+  const preOpenOther=d.preOpenMonths*80000;
+  const ffe=isClub?250000:600000;
+  const mechanical=isClub?0:2000000;
+  const permits=isClub?150000:450000;
+  const wcReserve=isClub?350000:1500000;
+  const totalCapital=buildout+mechanical+ffe+preOpenRent+preOpenOther+permits+wcReserve;
+  const membershipRev=d.memberCount*d.monthlyDues*12;
+  const initRev=d.memberCount*(d.initiationFee||0);
+  const memberVisits=d.memberCount*1.1;
+  const walkInVisits=d.walkInVisitsMonth||0;
+  const totalVisits=memberVisits+walkInVisits;
+  const fAndBRev=totalVisits*12*d.fAndBAttach*d.avgFandBSpend;
+  const treatmentRev=totalVisits*12*d.treatmentAttach*d.avgTreatmentSpend;
+  const walkInRev=walkInVisits*(d.walkInAvgSpend||0)*12;
+  const totalRev=membershipRev+fAndBRev+treatmentRev+walkInRev;
+  const rent=d.leasePerSqFt*d.sqFt;
+  const staff=d.staffCount*d.avgSalary;
+  const otherOpex=isClub?300000:800000;
+  const totalOpex=rent+staff+d.utilityAnnual+otherOpex;
+  const ebitda=totalRev*d.ebitdaMargin;
+  const monthlyBE=totalOpex/12;
+  const p2Cap=isClub&&d.phase2SqFt?d.phase2BuildoutPerSqFt*d.phase2SqFt+800000:0;
+  return{totalCapital,buildout,mechanical,ffe,preOpenRent,preOpenOther,permits,wcReserve,totalRev,membershipRev,fAndBRev,treatmentRev,walkInRev,initRev,totalOpex,rent,staff,ebitda,ebitdaMargin:d.ebitdaMargin,monthlyBE,breakEvenMonth:d.breakEvenMonth,memberCount:d.memberCount,totalVisits,p2Cap};
+}
+
+const SER="'Cormorant Garamond', serif";
+
+function Slider({label,value,min,max,step,format,onChange}){
+  return(<div style={{marginBottom:18}}>
+    <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
+      <span style={{fontSize:13,color:"#7a7267"}}>{label}</span>
+      <span style={{fontSize:14,fontFamily:SER,fontWeight:600,color:"#3d3832"}}>{format?format(value):value}</span>
+    </div>
+    <input type="range" min={min} max={max} step={step} value={value} onChange={e=>onChange(Number(e.target.value))}/>
+  </div>);
+}
+
+function Callout({label,value,sub}){
+  return(<div style={{flex:1,minWidth:180,padding:"28px 20px",background:"rgba(139,126,106,0.06)",borderRadius:2}}>
+    <div style={{fontSize:11,letterSpacing:"0.08em",color:"#8b7e6a",marginBottom:10}}>{label}</div>
+    <div style={{fontSize:32,fontFamily:SER,fontWeight:300,color:"#3d3832",lineHeight:1.1}}>{value}</div>
+    {sub&&<div style={{fontSize:12,color:"#9a8f82",marginTop:8,lineHeight:1.5}}>{sub}</div>}
+  </div>);
+}
+
+function Section({title,summary,children}){
+  const[open,setOpen]=useState(false);
+  return(<div style={{borderBottom:"1px solid rgba(139,126,106,0.12)"}}>
+    <button onClick={()=>setOpen(!open)} style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"20px 0",background:"none",border:"none",cursor:"pointer",textAlign:"left"}}>
+      <div style={{flex:1}}>
+        <div style={{fontSize:15,fontFamily:SER,fontWeight:500,color:"#3d3832"}}>{title}</div>
+        {!open&&summary&&<div style={{fontSize:13,color:"#9a8f82",marginTop:4}}>{summary}</div>}
+      </div>
+      <span style={{fontSize:18,color:"#b5aa9a",transform:open?"rotate(45deg)":"none",transition:"transform 0.2s",marginLeft:16,flexShrink:0}}>+</span>
+    </button>
+    {open&&<div style={{paddingBottom:28}}>{children}</div>}
+  </div>);
+}
+
+function Tbl({headers,rows}){
+  return(<div style={{overflowX:"auto"}}>
+    <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,margin:"12px 0 16px"}}>
+      <thead><tr>{headers.map((h,i)=><th key={i} style={{textAlign:i===0?"left":"right",padding:"10px 10px",borderBottom:"1px solid #e0d9cf",fontWeight:400,color:"#8b7e6a",fontSize:11,letterSpacing:"0.04em",whiteSpace:"nowrap"}}>{h}</th>)}</tr></thead>
+      <tbody>{rows.map((row,i)=><tr key={i}>{row.map((c,j)=><td key={j} style={{textAlign:j===0?"left":"right",padding:"9px 10px",borderBottom:"1px solid rgba(224,217,207,0.4)",color:j===0?"#5a5249":"#3d3832",fontFamily:j===0?"inherit":SER,fontSize:j===0?13:14}}>{c}</td>)}</tr>)}</tbody>
+    </table>
+  </div>);
+}
+
+function Bul({items}){
+  return(<ul style={{listStyle:"none",padding:0,margin:"10px 0"}}>
+    {items.map((item,i)=>{
+      const text=typeof item==="string"?item:item.text;
+      const sub=typeof item==="object"?item.sub:null;
+      return(<li key={i} style={{padding:"5px 0 5px 16px",position:"relative",fontSize:14,color:"#5a5249",lineHeight:1.6}}>
+        <span style={{position:"absolute",left:0,color:"#b5aa9a"}}>-</span>{text}
+        {sub&&<ul style={{listStyle:"none",padding:0,marginTop:4}}>
+          {sub.map((s,j)=><li key={j} style={{padding:"3px 0 3px 20px",position:"relative",fontSize:13,color:"#7a7267"}}>
+            <span style={{position:"absolute",left:4,color:"#c8bfb2"}}>-</span>{s}
+          </li>)}
+        </ul>}
+      </li>);
+    })}
+  </ul>);
+}
+
+function H3({children}){return <h3 style={{fontSize:14,fontFamily:SER,fontWeight:500,color:"#8b7e6a",letterSpacing:"0.04em",margin:"22px 0 8px"}}>{children}</h3>;}
+
+function LiveMetric({label,value,baseValue}){
+  const changed=value!==baseValue;
+  return(<div style={{marginBottom:14}}>
+    <div style={{fontSize:11,color:"#8b7e6a",letterSpacing:"0.05em",marginBottom:3}}>{label}</div>
+    <div style={{fontSize:22,fontFamily:SER,fontWeight:400,color:changed?"#6b5d3e":"#3d3832",transition:"color 0.2s"}}>
+      {value}{changed&&<span style={{fontSize:11,color:"#b5aa9a",marginLeft:8,fontFamily:"'DM Sans',sans-serif"}}>was {baseValue}</span>}
+    </div>
+  </div>);
+}
+
+function App(){
+  const[scenario,setScenario]=useState("base");
+  const[model,setModel]=useState("club");
+  const[overrides,setOverrides]=useState({});
+  const isClub=model==="club";
+  const baseData=isClub?SCENARIOS[scenario].club:SCENARIOS[scenario].large;
+  const d={...baseData,...overrides};
+  const m=calc(d,isClub);
+  const mBase=calc(baseData,isClub);
+  const otherData=isClub?SCENARIOS[scenario].large:SCENARIOS[scenario].club;
+  const mOther=calc(otherData,!isClub);
+  const hasOverrides=Object.keys(overrides).length>0;
+  const reset=useCallback(()=>setOverrides({}),[]);
+  const setO=useCallback((k,v)=>setOverrides(p=>({...p,[k]:v})),[]);
+  const sw=(v)=>{setModel(v);setOverrides({});};
+  const ss=(v)=>{setScenario(v);setOverrides({});};
+  const cons=calc(SCENARIOS.conservative[isClub?"club":"large"],isClub);
+  const base=calc(SCENARIOS.base[isClub?"club":"large"],isClub);
+  const opt=calc(SCENARIOS.optimistic[isClub?"club":"large"],isClub);
+
+  return(<div style={{maxWidth:840,margin:"0 auto",padding:"44px 20px 72px"}}>
+    <div style={{fontSize:11,letterSpacing:"0.12em",color:"#b5aa9a",marginBottom:12}}>feasibility study / san francisco</div>
+    <h1 style={{fontSize:34,fontFamily:SER,fontWeight:300,color:"#3d3832",margin:"0 0 6px",lineHeight:1.15}}>{isClub?"bathhouse reserve":"bathhouse sf"}</h1>
+    <div style={{fontSize:12,color:"#b5aa9a",marginBottom:32,letterSpacing:"0.04em"}}>{isClub?"private wellness and social club":"large format bathhouse and wellness center"} / april 2026</div>
+
+    <div style={{display:"flex",gap:0,marginBottom:24,background:"rgba(139,126,106,0.08)",borderRadius:2,overflow:"hidden",maxWidth:440}}>
+      {[{key:"club",label:"bathhouse reserve"},{key:"large",label:"bathhouse sf"}].map(o=>
+        <button key={o.key} onClick={()=>sw(o.key)} style={{flex:1,padding:"11px 14px",border:"none",cursor:"pointer",fontSize:13,letterSpacing:"0.03em",transition:"all 0.2s",background:model===o.key?"#3d3832":"transparent",color:model===o.key?"#faf7f2":"#8b7e6a"}}>{o.label}</button>
+      )}
+    </div>
+
+    <div style={{display:"flex",gap:0,marginBottom:36,maxWidth:340}}>
+      {["conservative","base","optimistic"].map(s=>
+        <button key={s} onClick={()=>ss(s)} style={{flex:1,padding:"9px 10px",cursor:"pointer",fontSize:12,letterSpacing:"0.05em",border:"1px solid rgba(139,126,106,0.15)",background:scenario===s?"rgba(139,126,106,0.15)":"transparent",color:scenario===s?"#3d3832":"#b5aa9a"}}>{s}</button>
+      )}
+    </div>
+
+    <div style={{marginBottom:44,fontSize:15,lineHeight:1.75,color:"#5a5249"}}>
+      {isClub
+        ?"bathhouse reserve is a uhnw private wellness and social club targeting "+d.memberCount+" members with "+fmt(d.initiationFee)+" initiation fees and "+fmt(d.monthlyDues)+"/mo dues. phase 1 requires "+fmt(m.totalCapital)+" for a "+num(d.sqFt)+" sq ft intimate concept in jackson square or pacific heights, scaling to a 9k sq ft flagship in phase 2 ("+fmt(m.p2Cap)+" additional). the model generates "+fmt(m.totalRev)+"/yr at maturity with "+pct(m.ebitdaMargin)+" ebitda margins, reaching breakeven by month "+m.breakEvenMonth+". the phased approach de-risks capital deployment and creates a compelling fundraising position for expansion. go, with conviction on the intimate first format."
+        :"bathhouse sf is a large format bathhouse and wellness center requiring "+fmt(m.totalCapital)+" in total capital for an "+num(d.sqFt)+" sq ft facility. the hybrid membership-plus-walk-in model targets "+num(d.memberCount)+" members and "+num(d.walkInVisitsMonth)+"/mo walk-in visits, generating "+fmt(m.totalRev)+"/yr at maturity with "+pct(m.ebitdaMargin)+" ebitda margins. breakeven arrives by month "+m.breakEvenMonth+". the concept is viable but capital-intensive with meaningful ramp risk. sf's smaller population (870k vs nyc's 8.3m) requires 3-4x the per-capita penetration of bathhouse manhattan. conditional go, pending creative capital structure."
+      }
+    </div>
+
+    <div style={{display:"flex",gap:10,marginBottom:44,flexWrap:"wrap"}}>
+      <Callout label="total capital required" value={isClub?fmt(m.totalCapital)+" - "+fmt(m.totalCapital+m.p2Cap):fmt(m.totalCapital)} sub={isClub?"phase 1: "+fmt(m.totalCapital)+" / phase 2: "+fmt(m.p2Cap):fmt(m.buildout)+" buildout + "+fmt(m.totalCapital-m.buildout)+" soft costs"}/>
+      <Callout label="monthly breakeven revenue" value={fmt(m.monthlyBE)} sub={"reached by month "+m.breakEvenMonth}/>
+      <Callout label="addressable member pool" value={isClub?"12-18k":"45-65k"} sub={isClub?"sf households with $5m+ net worth":"sf adults hhi $150k+, wellness-oriented"}/>
+    </div>
+
+    <h2 style={{fontSize:17,fontFamily:SER,fontWeight:400,color:"#3d3832",marginBottom:14}}>side-by-side comparison</h2>
+    <Tbl headers={["","bathhouse reserve","bathhouse sf"]} rows={[
+      ["total investment",fmt(isClub?m.totalCapital:mOther.totalCapital)+(isClub?" - "+fmt(m.totalCapital+m.p2Cap):""),fmt(isClub?mOther.totalCapital:m.totalCapital)],
+      ["annual revenue",fmt(isClub?m.totalRev:mOther.totalRev),fmt(isClub?mOther.totalRev:m.totalRev)],
+      ["ebitda margin",pct(isClub?m.ebitdaMargin:mOther.ebitdaMargin),pct(isClub?mOther.ebitdaMargin:m.ebitdaMargin)],
+      ["breakeven","month "+(isClub?m.breakEvenMonth:mOther.breakEvenMonth),"month "+(isClub?mOther.breakEvenMonth:m.breakEvenMonth)],
+      ["member target",String(isClub?m.memberCount:mOther.memberCount),String(isClub?mOther.memberCount:m.memberCount)],
+      ["capital risk","lower, phased","higher, single bet"],
+      ["ramp risk","moderate, referral-driven","high, needs fast volume"],
+      ["exit optionality","brand extension, multi-city","single-asset, operator sale"],
+    ]}/>
+
+    <h2 style={{fontSize:17,fontFamily:SER,fontWeight:400,color:"#3d3832",margin:"40px 0 12px"}}>what needs to be true</h2>
+    <Bul items={isClub?[
+      "sf's uhnw community (12-18k households) has unmet demand for an intimate, wellness-forward social club that the battery and pacific-union don't fill",
+      "200+ founding members secured pre-launch through personal networks at "+fmt(d.initiationFee)+" initiation + "+fmt(d.monthlyDues)+"/mo dues",
+      "a "+num(d.sqFt)+" sq ft phase 1 space delivers a premium enough experience to command luxury pricing and build a waitlist for phase 2",
+      "sf permitting for a wet facility in jackson square or pac heights is achievable within 10-12 months",
+      "f&b and programming (cigar evenings, wine dinners, speaker series) drive 1.0-1.2 visits per member per week, sustaining 90%+ annual retention",
+    ]:[
+      "sf can support 60-70% of bathhouse manhattan's visitor throughput from a population base 30% the size (3-4x per-capita penetration)",
+      "a hybrid model ("+num(d.memberCount)+" members + "+num(d.walkInVisitsMonth)+" walk-ins/mo) generates volume to cover $400-500k/mo opex",
+      "sf permitting for an "+num(d.sqFt)+" sq ft wet facility completes within 14-18 months",
+      "wellness-forward positioning differentiates enough from archimedes banya and kabuki springs to command 2-3x price premium",
+      "construction costs stay at or below $500-600/sq ft despite sf's prevailing wage and wet-facility complexity",
+    ]}/>
+
+    <div style={{margin:"40px 0",background:"rgba(139,126,106,0.04)",padding:"24px 20px",borderRadius:2}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+        <h2 style={{fontSize:15,fontFamily:SER,fontWeight:400,color:"#3d3832",margin:0}}>adjust key assumptions</h2>
+        {hasOverrides&&<button onClick={reset} style={{fontSize:11,color:"#8b7e6a",background:"none",border:"1px solid #ddd5c8",padding:"4px 12px",cursor:"pointer",borderRadius:2}}>reset to {scenario}</button>}
+      </div>
+      <div style={{fontSize:12,color:"#9a8f82",marginBottom:20}}>drag any slider to see how it affects the four outputs on the right. all top-level numbers update live.</div>
+      <div style={{display:"flex",gap:32,flexWrap:"wrap"}}>
+        <div style={{flex:1.2,minWidth:240}}>
+          {isClub?<>
+            <Slider label="initiation fee" value={d.initiationFee} min={10000} max={75000} step={5000} format={fmt} onChange={v=>setO("initiationFee",v)}/>
+            <Slider label="monthly dues" value={d.monthlyDues} min={500} max={3000} step={100} format={fmt} onChange={v=>setO("monthlyDues",v)}/>
+            <Slider label="member count" value={d.memberCount} min={100} max={500} step={25} onChange={v=>setO("memberCount",v)}/>
+          </>:<>
+            <Slider label="monthly dues" value={d.monthlyDues} min={99} max={400} step={25} format={fmt} onChange={v=>setO("monthlyDues",v)}/>
+            <Slider label="member count" value={d.memberCount} min={400} max={1500} step={50} onChange={v=>setO("memberCount",v)}/>
+            <Slider label="walk-in visits / month" value={d.walkInVisitsMonth||0} min={500} max={5000} step={250} format={num} onChange={v=>setO("walkInVisitsMonth",v)}/>
+          </>}
+          <Slider label="buildout cost / sq ft" value={d.buildoutPerSqFt} min={300} max={800} step={25} format={fmt} onChange={v=>setO("buildoutPerSqFt",v)}/>
+          <Slider label="lease rate / sq ft" value={d.leasePerSqFt} min={40} max={120} step={5} format={fmt} onChange={v=>setO("leasePerSqFt",v)}/>
+        </div>
+        <div style={{flex:0.8,minWidth:200,paddingLeft:8,borderLeft:"1px solid rgba(139,126,106,0.12)"}}>
+          <div style={{fontSize:11,letterSpacing:"0.06em",color:"#8b7e6a",marginBottom:14}}>live output</div>
+          <LiveMetric label="total capital" value={fmt(m.totalCapital)} baseValue={fmt(mBase.totalCapital)}/>
+          <LiveMetric label="annual revenue" value={fmt(m.totalRev)} baseValue={fmt(mBase.totalRev)}/>
+          <LiveMetric label="ebitda" value={fmt(m.ebitda)} baseValue={fmt(mBase.ebitda)}/>
+          <LiveMetric label="monthly breakeven" value={fmt(m.monthlyBE)} baseValue={fmt(mBase.monthlyBE)}/>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <Section title="1. market landscape and comps" summary="sf has 5 bathhouse/spa operators and 3+ social clubs, but no uhnw wellness-social hybrid.">
+        <H3>sf competitive landscape</H3>
+        <Tbl headers={["venue","format","entry price","membership","positioning"]} rows={[
+          ["archimedes banya","traditional bathhouse, 6k sq ft","$45-55","punch cards","utilitarian, communal"],
+          ["kabuki springs","japanese bathhouse, 5k sq ft","$35-50","none","dated but beloved"],
+          ["onsen","small hot spring, 2k sq ft","$55-65","none","intimate, outdoor"],
+          ["sweathouz","contrast therapy franchise","$40-55","$149-249/mo","recovery-focused"],
+          ["sens spa","hotel spa","$70-90","none","traditional format"],
+        ]}/>
+        <H3>sf social clubs</H3>
+        <Tbl headers={["club","initiation","monthly dues","cap","focus"]} rows={[
+          ["the battery","$30k","$500/mo","~3k","tech, arts, dining, hotel"],
+          ["pacific-union club","$25-40k","$300-400/mo","~1.5k","legacy business elite"],
+          ["olympic club","$15-30k","$300-500/mo","~5k","athletics, golf"],
+        ]}/>
+        <H3>national uhnw wellness comps</H3>
+        <Tbl headers={["concept","initiation","dues","cap","format"]} rows={[
+          ["aman club nyc","$100k","$15k/yr","~1k","wellness + dining, ultra-exclusive"],
+          ["core club nyc","$50k","$18k/yr","~900","wellness + workspace + dining"],
+          ["remedy place la/nyc","$5-10k","$500-750/mo","~500","wellness-forward, smaller"],
+          ["casa cipriani nyc","$10-15k","$1k/mo","~1k","hotel + club + wellness"],
+          ["zero bond nyc","$3.5k","$350/mo","~2k","lounge + events"],
+        ]}/>
+        <Bul items={[
+          "no sf club combines wellness (bathhouse, sauna, treatments) with a true social membership and curated programming",
+          "the battery is the closest comp: same demo, strong brand, but minimal wellness. position as complement, not competitor",
+          "bathhouse nyc proves demand in manhattan ($41m raised, ~$120m ttm revenue). sf is culturally aligned but 1/10th the density",
+          "the gap is at the intersection of wellness and community. existing options are either wellness without social or social without wellness",
+        ]}/>
+      </Section>
+
+      <Section title="2. real estate and buildout costs" summary={isClub?scenario+" case: "+fmt(m.buildout)+" buildout ("+fmt(d.buildoutPerSqFt)+"/sq ft x "+num(d.sqFt)+" sq ft). target: jackson square or pac heights.":scenario+" case: "+fmt(m.buildout+m.mechanical)+" construction ("+fmt(d.buildoutPerSqFt)+"/sq ft x "+num(d.sqFt)+" sq ft + $2m mechanical). target: soma."}>
+        <H3>capital stack ({scenario} case)</H3>
+        <Tbl headers={["line item","amount","% of total"]} rows={[
+          ["construction ("+num(d.sqFt)+" sq ft at "+fmt(d.buildoutPerSqFt)+"/sq ft)",fmt(m.buildout),pct(m.buildout/m.totalCapital)],
+          ...(!isClub?[["mechanical systems (pools, hvac, steam)",fmt(m.mechanical),pct(m.mechanical/m.totalCapital)]]:[]),
+          ["ff&e and equipment",fmt(m.ffe),pct(m.ffe/m.totalCapital)],
+          ["pre-opening rent ("+d.preOpenMonths+" months)",fmt(m.preOpenRent),pct(m.preOpenRent/m.totalCapital)],
+          ["pre-opening staff and marketing",fmt(m.preOpenOther),pct(m.preOpenOther/m.totalCapital)],
+          ["permits and professional fees",fmt(m.permits),pct(m.permits/m.totalCapital)],
+          ["working capital reserve",fmt(m.wcReserve),pct(m.wcReserve/m.totalCapital)],
+          ["total",fmt(m.totalCapital),"100%"],
+        ]}/>
+        <Bul items={[
+          {text:"sf-specific cost drivers",sub:["prevailing wage adds 15-25% to labor costs","wet facility permitting takes 12-18 months","seismic retrofit can add $50-100/sq ft","pg&e rates ($0.30-0.35/kwh) are 2.5x national average"]},
+          {text:"location considerations",sub:isClub?["jackson square: 2-4k sq ft, $65-85/sq ft nnn, historic character","pacific heights: fillmore or sacramento, $55-75/sq ft, residential affluent","avoid fidi/soma: wrong energy for intimate uhnw concept"]:["soma: larger floor plates, $45-65/sq ft nnn, 15-20k sq ft available","jackson square: premium but hard to find 18k contiguous","dogpatch: warehouse conversion, $40-55/sq ft, weaker traffic"]},
+        ]}/>
+      </Section>
+
+      <Section title="3. revenue model and capacity math" summary={scenario+" case: "+fmt(m.totalRev)+"/yr at maturity, "+pct(m.ebitdaMargin)+" ebitda margin, breakeven month "+m.breakEvenMonth+"."}>
+        <H3>revenue by stream ({scenario} case, annual at maturity)</H3>
+        <Tbl headers={["stream","annual","% of total","driver"]} rows={[
+          ["membership dues",fmt(m.membershipRev),pct(m.membershipRev/m.totalRev),d.memberCount+" x "+fmt(d.monthlyDues)+"/mo"],
+          ...(isClub?[["initiation fees (yr 1 only)",fmt(m.initRev),"n/a",d.memberCount+" x "+fmt(d.initiationFee)]]:
+            [["walk-in admissions",fmt(m.walkInRev),pct(m.walkInRev/m.totalRev),num(d.walkInVisitsMonth)+"/mo x "+fmt(d.walkInAvgSpend)]]),
+          ["f&b",fmt(m.fAndBRev),pct(m.fAndBRev/m.totalRev),pct(d.fAndBAttach)+" attach, "+fmt(d.avgFandBSpend)+" avg"],
+          ["treatments",fmt(m.treatmentRev),pct(m.treatmentRev/m.totalRev),pct(d.treatmentAttach)+" attach, "+fmt(d.avgTreatmentSpend)+" avg"],
+          ["total",fmt(m.totalRev),"100%",""],
+        ]}/>
+        <H3>operating costs ({scenario} case, annual)</H3>
+        <Tbl headers={["expense","amount","% of revenue"]} rows={[
+          ["rent",fmt(m.rent),pct(m.rent/m.totalRev)],
+          ["staff ("+d.staffCount+" ftes)",fmt(m.staff),pct(m.staff/m.totalRev)],
+          ["utilities",fmt(d.utilityAnnual),pct(d.utilityAnnual/m.totalRev)],
+          ["other opex",fmt(isClub?300000:800000),pct((isClub?300000:800000)/m.totalRev)],
+          ["total opex",fmt(m.totalOpex),pct(m.totalOpex/m.totalRev)],
+          ["ebitda",fmt(m.ebitda),pct(m.ebitdaMargin)],
+        ]}/>
+      </Section>
+
+      <Section title="4. demand validation and wallet share" summary="bathhouse membership is a complement to fitness (different budget line), not a substitute.">
+        <H3>sf premium membership landscape</H3>
+        <Tbl headers={["club/gym","monthly cost","category","overlap"]} rows={[
+          ["equinox","$260-350/mo","fitness","low: different use case"],
+          ["bay club","$200-350/mo","fitness + social","moderate: similar demo"],
+          ["the battery","$500/mo + $30k","social","high: same demo, complementary"],
+          ["sweathouz","$149-249/mo","recovery","moderate: similar modality"],
+          ["heimat","$200-300/mo","fitness","low: crossfit/community"],
+        ]}/>
+        <Bul items={[
+          {text:"target demo wellness spend (sf, hhi $200k+)",sub:["fitness: $250-400/mo","spa/treatments: $200-400/mo","wellness subscriptions: $50-150/mo","social dining: $500-1k/mo","total addressable wallet: $1-2k/mo"]},
+          {text:"the membership is a complement, not a substitute",sub:["sits in the same budget line as spa and social dining, not fitness","average affluent sf resident holds 2-3 premium memberships","fitness churn: 30-40%/yr. social club churn: 15-25%/yr","key retention driver: social connection. 3+ friendships = 95%+ retention"]},
+          {text:"demand signals",sub:["bathhouse nyc: $41m raised, ~$120m ttm","othership toronto: 4 locations, $29m raised, 50k+ members","sweathouz: 40+ franchise locations","sf has zero large-format premium bathhouse concepts"]},
+        ]}/>
+      </Section>
+
+      <Section title="5. concept and member personas" summary="4 personas drive distinct usage patterns, self-balancing peak and off-peak demand.">
+        <H3>member personas</H3>
+        <Tbl headers={["persona","profile","usage","spend","mix"]} rows={[
+          ["sarah (wellness)","42, tech exec, $500k+","mornings 3x/week","$1.5-2k","~40%"],
+          ["james (networker)","55, pe/vc, $1m+","afternoon 2x/week","$2-3k","~20%"],
+          ["priya + michael","late 30s, dual $400k+","fri-sat evenings","$1.5-2.5k","~25%"],
+          ["alex (nightlife)","29, tech, $250k+","late eve 2-3x/week","$1-2k","~15%"],
+        ]}/>
+        <H3>weekly programming</H3>
+        <Tbl headers={["day","programming","est. rev","visits"]} rows={[
+          ["monday","quiet day, wellness mornings","$4-6k","40-60"],
+          ["tuesday","speaker series or clinic","$6-9k","60-80"],
+          ["wednesday","supper club (set menu)","$10-14k","70-90"],
+          ["thursday","cigar evening, wine tasting","$12-16k","80-110"],
+          ["friday","full social: bar, dining, music","$14-18k","90-120"],
+          ["saturday","wellness day, curated evening","$12-16k","80-110"],
+          ["sunday","sunday supper (communal)","$5-8k","30-50"],
+          ["weekly total","","$63-87k","450-620"],
+        ]}/>
+        <Bul items={["annual f&b + amenity revenue: $3.3-4.5m","persona mix is self-balancing across time slots","members visiting 1x+/week retain at 90%+. target: 1.0-1.2 visits/week"]}/>
+      </Section>
+
+      <Section title="6. amenity deep dive: bar, cigar, and wellness" summary="cigar lounge legally viable (ca tobacco exemption). bar requires type 57 abc license.">
+        <H3>cigar lounge feasibility</H3>
+        <Bul items={[
+          {text:"legal path in sf/ca",sub:["ca labor code 6404.5(d) exempts owner-operated tobacco retail from smoking bans","private club qualifies if no employees in smoking area","grand havana room sf operates under this exemption","tobacco retail permit: $692/yr, density restriction compliance","physically separated with negative-pressure ventilation"]},
+          {text:"economics",sub:["locker programs: $500-2k/yr x 30-50 lockers = $15-100k/yr","cigar retail: 40-60% markup, $100-500k/yr","powerful retention driver: no other sf wellness club has one"]},
+        ]}/>
+        <H3>bar and liquor license</H3>
+        <Bul items={[
+          {text:"abc license options",sub:["type 57 (special on-sale general): full liquor at a club, most appropriate","type 47 (restaurant): works if food service is integral","cost: $15-25k + $5-10k legal. timeline: 3-6 months"]},
+          {text:"bar economics",sub:["target: $26-30 avg beverage check","cogs: 18-22% for curated spirits","bar is the social anchor, not standalone profit center"]},
+        ]}/>
+        <H3>amenity benchmarking</H3>
+        <Tbl headers={["amenity","table stakes","differentiator","notes"]} rows={[
+          ["bathhouse / sauna / steam","yes","","core product"],
+          ["dining / f&b","yes","","quality over variety"],
+          ["treatment rooms","yes","","3-5 rooms"],
+          ["members lounge","yes","","social anchor"],
+          ["cigar lounge","","yes","rare in sf, retention hook"],
+          ["outdoor terrace","","yes","year-round in sf"],
+          ["hotel rooms","","yes (phase 2+)","later phase"],
+        ]}/>
+      </Section>
+
+      <Section title="7. competitive positioning" summary="positioned at the intersection of wellness and social, whitespace no sf club occupies.">
+        <Bul items={[
+          "no sf club occupies the intersection of deep wellness and strong community",
+          "the battery: same demo, strong brand, minimal wellness. complement, not competitor. many will hold both",
+          "bathhouse concepts (banya, kabuki, onsen): wellness but no social infrastructure. transaction-based",
+          "remedy place: closest national model but skews younger. bathhouse reserve should be more aman than remedy place",
+          "positioning: your third place between home and work, anchored in wellness, designed for the relationships that matter",
+          "cigar lounge and curated programming create sticky social rituals pure wellness concepts can not replicate",
+        ]}/>
+        <H3>positioning spectrum</H3>
+        <Tbl headers={["","bathhouse reserve","the battery","remedy place","banya"]} rows={[
+          ["wellness","deep","minimal","moderate","deep"],
+          ["social","curated, intimate","networking","classes","informal"],
+          ["exclusivity","200-500 members","~3k members","~500 members","public"],
+          ["f&b","destination-level","excellent","light","basic"],
+          ["programming","cigar, wine, supper","arts, dining","workshops","none"],
+          ["price",fmt(d.monthlyDues)+"/mo + "+fmt(d.initiationFee),"$500/mo + $30k","$500-750/mo","$45/visit"],
+        ]}/>
+      </Section>
+
+      <Section title="8. scenario analysis" summary={"conservative: "+fmt(cons.ebitda)+" ebitda. base: "+fmt(base.ebitda)+". optimistic: "+fmt(opt.ebitda)+"."}>
+        <Tbl headers={["metric","conservative","base","optimistic"]} rows={[
+          ["total capital",fmt(cons.totalCapital),fmt(base.totalCapital),fmt(opt.totalCapital)],
+          ["annual revenue",fmt(cons.totalRev),fmt(base.totalRev),fmt(opt.totalRev)],
+          ["ebitda",fmt(cons.ebitda),fmt(base.ebitda),fmt(opt.ebitda)],
+          ["ebitda margin",pct(cons.ebitdaMargin),pct(base.ebitdaMargin),pct(opt.ebitdaMargin)],
+          ["breakeven","month "+SCENARIOS.conservative[isClub?"club":"large"].breakEvenMonth,"month "+SCENARIOS.base[isClub?"club":"large"].breakEvenMonth,"month "+SCENARIOS.optimistic[isClub?"club":"large"].breakEvenMonth],
+          ["members",String(SCENARIOS.conservative[isClub?"club":"large"].memberCount),String(SCENARIOS.base[isClub?"club":"large"].memberCount),String(SCENARIOS.optimistic[isClub?"club":"large"].memberCount)],
+          ...(isClub?[["initiation fee",fmt(SCENARIOS.conservative.club.initiationFee),fmt(SCENARIOS.base.club.initiationFee),fmt(SCENARIOS.optimistic.club.initiationFee)]]
+            :[["walk-ins/mo",num(SCENARIOS.conservative.large.walkInVisitsMonth),num(SCENARIOS.base.large.walkInVisitsMonth),num(SCENARIOS.optimistic.large.walkInVisitsMonth)]]),
+        ]}/>
+        <H3>what separates each scenario</H3>
+        <Bul items={[
+          {text:"conservative: slower ramp, sf friction",sub:["permits take "+(isClub?"12":"18")+" months","membership builds 20% slower","f&b attach below 40%"]},
+          {text:"base: strong execution",sub:["permits on timeline, pre-sales at 60%","programming drives 1x+/week visits","waitlist within 12-18 months"]},
+          {text:"optimistic: fast social traction",sub:["founding round oversubscribed","f&b becomes a destination","cigar programming drives 30%+ of evening visits"]},
+        ]}/>
+      </Section>
+
+      <Section title="9. risk matrix with mitigants" summary={"top risks: permitting delays, "+(isClub?"founding member recruitment":"ramp cash burn")+", per-capita assumption."}>
+        <Tbl headers={["risk","prob.","impact","mitigant"]} rows={isClub?[
+          ["permitting delays","high","high","budget 12-14 months. expediter. target existing plumbing"],
+          ["founding member shortfall","medium","high","75 commitments before lease. non-refundable deposits"],
+          ["f&b misses uhnw standard","medium","high","hire f&b director from battery/casa cipriani caliber"],
+          ["churn exceeds 20%/yr","low-med","medium","social programming. 3+ friendships = 95%+ retention"],
+          ["3.5k sq ft too small","medium","medium","intimacy is the feature. natural scarcity"],
+          ["phase 2 fundraise fails","low","medium","phase 1 self-sustaining at $1.5m ebitda"],
+          ["battery adds wellness","low","low","networking brand can not replicate wellness-native culture"],
+          ["cigar lounge scrutiny","low-med","medium","tobacco counsel. ca labor code 6404.5(d) exemption"],
+        ]:[
+          ["permitting delays (18+ mo)","high","critical","budget 14-18 months. $2.5m pre-opening burn"],
+          ["ramp cash burn","high","critical","trough $3-5m. need $18-22m or credit facility"],
+          ["per-capita assumption fails","medium","high","needs 3-4x nyc rate. if 2x, revenue down 30-40%"],
+          ["construction above $600/sq ft","medium","high","budget $500-600 as base"],
+          ["membership ramp slow","medium","medium","walk-ins provide 40-50% of year 1 revenue"],
+          ["utility overshoot","medium","low","heat recovery, solar to mitigate pg&e rates"],
+          ["labor tightness","medium","medium","above-market comp for key hires"],
+          ["competitive entry","low","medium","$10m+ and 18-month build = natural moat"],
+        ]}/>
+        <H3>the single biggest risk</H3>
+        <Bul items={isClub?[
+          "founding member recruitment. depends on 180-250 members at "+fmt(d.initiationFee)+" initiation before opening. requires personal, network-driven process",
+          "mitigant: loi (not lease) contingent on 75 founding deposits. prove demand before committing to the space",
+        ]:[
+          "ramp period, not steady-state economics. burns $400-500k/month early. conservative breakeven at month 22-24 creates $3-5m cash gap",
+          "mitigant: raise $18-22m (not $15m), or $3-5m working capital facility. alternatively, bathhouse reserve de-risks by starting smaller",
+        ]}/>
+      </Section>
+
+      <Section title="10. sources" summary="pitchbook, web research, club websites, industry reports, sf regulatory filings.">
+        <Bul items={[
+          "bathhouse nyc: pitchbook ($41m raised, ~$120m ttm revenue)",
+          "sweathouz: franchise disclosure documents, pitchbook ($47m+ funding)",
+          "othership toronto: crunchbase ($29m raised)",
+          "the battery sf: website, press ($30k initiation, $500/mo)",
+          "pacific-union club: member directory, press ($25-40k initiation)",
+          "aman club nyc: press, investor materials ($100k initiation, $15k/yr)",
+          "core club nyc: press, member interviews ($50k initiation, $18k/yr)",
+          "remedy place: website, pitchbook ($5-10k initiation, $500-750/mo)",
+          "sf real estate: cbre, cushman & wakefield market reports",
+          "ca abc licensing: abc.ca.gov (type 57, 67 requirements)",
+          "ca tobacco: labor code 6404.5, sf health code article 19f",
+          "wellness industry: global wellness institute 2025, mckinsey wellness survey",
+          "consumer spending: bls consumer expenditure survey, census acs",
+          "pg&e: commercial rate schedules (2025)",
+        ]}/>
+      </Section>
+    </div>
+
+    <div style={{marginTop:48,paddingTop:16,fontSize:11,color:"#b5aa9a"}}>feasibility study prepared april 2026. projections are estimates based on market data and comparable analysis. not investment advice.</div>
+  </div>);
+}
+
+ReactDOM.render(React.createElement(App), document.getElementById("root"));
+</script>
+</body>
+</html>
